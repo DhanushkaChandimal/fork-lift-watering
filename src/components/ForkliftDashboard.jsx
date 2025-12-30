@@ -129,9 +129,15 @@ const ForkliftDashboard = () => {
 			status = 'warning';
 		}
 
-		console.log(forklift.number + "  -  " + status + "  -  " + days)
+		// console.log(forklift.number + "  -  " + status + "  -  " + days)
 
 		return `status-${status}`;
+	};
+
+	const formatDate = (dateString) => {
+		if (!dateString) return 'N/A';
+		const date = new Date(dateString);
+		return date.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }) + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 	};
 
 	return (
@@ -175,7 +181,7 @@ const ForkliftDashboard = () => {
 									<td>
 										<span>Needs watering</span>
 									</td>
-									<td>{forklift.lastWateringDate}</td>
+									<td>{formatDate(forklift.lastWateringDate)}</td>
 									<td>{forklift.lastWateredBy || 'N/A'}</td>
 								</tr>
 							))}
@@ -198,7 +204,7 @@ const ForkliftDashboard = () => {
 							{forklifts.filter(f => f.isOutOfService).map(forklift => (
 								<tr key={forklift.id}>
 									<td className="forklift-number">Forklift #{forklift.number}</td>
-									<td>{forklift.outOfServiceStartDate}</td>
+									<td>{formatDate(forklift.outOfServiceStartDate)}</td>
 								</tr>
 							))}
 						</tbody>
