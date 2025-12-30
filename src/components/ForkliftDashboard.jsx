@@ -140,6 +140,19 @@ const ForkliftDashboard = () => {
 		return date.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }) + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 	};
 
+	const handleServiceStatusToOut = (forklift) => {
+		setForklifts(prev => prev.map(f => 
+		f.id === forklift.id 
+			? {
+				...f,
+				isOutOfService: true,
+				outOfServiceStartDate: new Date().toISOString(),
+				outOfServiceEndDate: null,
+				}
+			: f
+		));
+	};
+
 	return (
 		<div className="forklift-dashboard">
 			<header className="dashboard-header">
@@ -172,6 +185,7 @@ const ForkliftDashboard = () => {
 								<th>STATUS</th>
 								<th>LAST WATERED</th>
 								<th>WATERED BY</th>
+								<th>ACTIONS</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -183,6 +197,19 @@ const ForkliftDashboard = () => {
 									</td>
 									<td>{formatDate(forklift.lastWateringDate)}</td>
 									<td>{forklift.lastWateredBy || 'N/A'}</td>
+									<td className="actions-cell">
+										<button 
+											className="btn btn-primary"
+										>
+											Water Battery
+										</button>
+										<button 
+											className="btn btn-secondary"
+											onClick={() => handleServiceStatusToOut(forklift)}
+										>
+											Mark Out of Service
+										</button>
+									</td>
 								</tr>
 							))}
 						</tbody>
@@ -196,8 +223,8 @@ const ForkliftDashboard = () => {
 					<table className="forklift-table">
 						<thead>
 							<tr>
-								<th>Forklift #</th>
-								<th>Out of Service Since</th>
+								<th>FORKLIFT #</th>
+								<th>OUT OF SERVICE SINCE</th>
 							</tr>
 						</thead>
 						<tbody>
