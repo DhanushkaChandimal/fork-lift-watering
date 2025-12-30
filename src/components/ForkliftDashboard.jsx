@@ -108,7 +108,6 @@ const ForkliftDashboard = () => {
         ];
     });
 
-
 	return (
 		<div className="forklift-dashboard">
 			<header className="dashboard-header">
@@ -131,6 +130,33 @@ const ForkliftDashboard = () => {
 				</div>
 			</div>
 
+			<section className="table-section">
+				<h2>Active Forklifts</h2>
+				<div className="table-container">
+					<table className="forklift-table">
+						<thead>
+							<tr>
+								<th>FORKLIFT #</th>
+								<th>STATUS</th>
+								<th>LAST WATERED</th>
+								<th>WATERED BY</th>
+							</tr>
+						</thead>
+						<tbody>
+							{forklifts.filter(f => !f.isOutOfService).map(forklift => (
+								<tr key={forklift.id}>
+									<td>Forklift #{forklift.number}</td>
+									<td>
+										<span>Needs watering</span>
+									</td>
+									<td>{forklift.lastWateringDate}</td>
+									<td>{forklift.lastWateredBy || 'N/A'}</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
+			</section>
 		</div>
 	);
 };
