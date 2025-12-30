@@ -108,6 +108,32 @@ const ForkliftDashboard = () => {
         ];
     });
 
+	const getDaysSinceWatering = (forklift) => {
+		if (!forklift.lastWateringDate) return Infinity;
+		
+		const lastWatering = new Date(forklift.lastWateringDate);
+		const today = new Date();
+    
+		const diffTime = Math.abs(today - lastWatering);
+		const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+		return diffDays;
+  	};
+
+	const getColorClass = (forklift) => {
+		const days = getDaysSinceWatering(forklift);
+		let status = 'good';
+		
+		if (days === Infinity || days >= 14) {
+			status =  'urgent';
+		}else if (days >= 10){
+			status = 'warning';
+		}
+
+		console.log(forklift.number + "  -  " + status + "  -  " + days)
+
+		return `status-${status}`;
+	};
+
 	return (
 		<div className="forklift-dashboard">
 			<header className="dashboard-header">
@@ -144,8 +170,8 @@ const ForkliftDashboard = () => {
 						</thead>
 						<tbody>
 							{forklifts.filter(f => !f.isOutOfService).map(forklift => (
-								<tr key={forklift.id}>
-									<td>Forklift #{forklift.number}</td>
+								<tr key={forklift.id} className={getColorClass(forklift)}>
+									<td className="forklift-number">Forklift #{forklift.number}</td>
 									<td>
 										<span>Needs watering</span>
 									</td>

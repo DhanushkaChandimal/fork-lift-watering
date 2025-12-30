@@ -24,6 +24,7 @@
   display: flex;
   justify-content: center;
   gap: 30px;
+  margin-bottom: 30px;
 }
 
 .legend-item {
@@ -90,4 +91,8 @@
 
 .forklift-table tbody tr:hover {
   background-color: #dddddd;
+}
+
+.forklift-number {
+  font-weight: 600;
 }
