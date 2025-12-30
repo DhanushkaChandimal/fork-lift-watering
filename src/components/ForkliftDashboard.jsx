@@ -183,6 +183,28 @@ const ForkliftDashboard = () => {
 					</table>
 				</div>
 			</section>
+
+			<section className="table-section">
+				<h2>Out of Service Forklifts</h2>
+				<div className="table-container">
+					<table className="forklift-table">
+						<thead>
+							<tr>
+								<th>Forklift #</th>
+								<th>Out of Service Since</th>
+							</tr>
+						</thead>
+						<tbody>
+							{forklifts.filter(f => f.isOutOfService).map(forklift => (
+								<tr key={forklift.id}>
+									<td className="forklift-number">Forklift #{forklift.number}</td>
+									<td>{forklift.outOfServiceStartDate}</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
+			</section>
 		</div>
 	);
 };

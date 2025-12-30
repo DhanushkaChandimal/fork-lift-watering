@@ -43,21 +43,25 @@
 
 /* Status Colors */
 .status-urgent {
-  background-color: #ffe0e0 !important;
+  background-color: #ffe0e0;
   border-left: 4px solid #d30000;
 }
 
 .status-warning {
-  background-color: #fff9c4 !important;
+  background-color: #fff9c4;
   border-left: 4px solid #f9a825;
 }
 
 .status-good {
-  background-color: #e8f5e9 !important;
+  background-color: #e8f5e9;
   border-left: 4px solid #2e7d32;
 }
 
 /* Table Section */
+.table-section {
+  margin-bottom: 40px;
+}
+
 .table-section h2 {
   margin-bottom: 15px;
   font-size: 20px;
