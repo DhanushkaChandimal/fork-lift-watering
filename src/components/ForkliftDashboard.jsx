@@ -116,10 +116,19 @@ const ForkliftDashboard = () => {
 				<p className="subtitle">Batteries should be watered at least once every 2 weeks</p>
 			</header>
 
-			<div>
-				<span>Urgent (14+ days)</span>
-				<span>Warning (10-13 days)</span>
-				<span>Good (&lt;10 days)</span>
+			<div className="legend">
+				<div className="legend-item">
+					<span className="legend-color status-urgent"></span>
+					<span>Urgent (14+ days)</span>
+				</div>
+				<div className="legend-item">
+					<span className="legend-color status-warning"></span>
+					<span>Warning (10-13 days)</span>
+				</div>
+				<div className="legend-item">
+					<span className="legend-color status-good"></span>
+					<span>Good (&lt;10 days)</span>
+				</div>
 			</div>
 
 		</div>
