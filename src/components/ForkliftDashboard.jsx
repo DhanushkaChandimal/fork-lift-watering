@@ -211,8 +211,15 @@ const ForkliftDashboard = () => {
 		setSelectedForklift(null);
 	};
 
+	const sortByUrgency = (a, b) => {
+		const daysA = getDaysSinceWatering(a);
+		const daysB = getDaysSinceWatering(b);
+		return daysB - daysA;
+	};
+
 	const activeForklifts = forklifts
 		.filter(f => !f.isOutOfService)
+		.sort(sortByUrgency);
 	
 	const outOfServiceForklifts = forklifts
 		.filter(f => f.isOutOfService);
