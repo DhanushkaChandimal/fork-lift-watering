@@ -13,7 +13,6 @@ const ForkliftDashboard = () => {
 		return [
 			{
 				id: 1,
-				number: 1,
 				lastWateringDate: new Date(now - 18 * 24 * 60 * 60 * 1000).toISOString(), // 18 days ago - URGENT
 				lastWateredBy: 'Dhanushka',
 				isOutOfService: false,
@@ -22,7 +21,6 @@ const ForkliftDashboard = () => {
 			},
 			{
 				id: 2,
-				number: 2,
 				lastWateringDate: new Date(now - 15 * 24 * 60 * 60 * 1000).toISOString(), // 15 days ago - URGENT
 				lastWateredBy: 'Dee',
 				isOutOfService: false,
@@ -31,7 +29,6 @@ const ForkliftDashboard = () => {
 			},
 			{
 				id: 3,
-				number: 3,
 				lastWateringDate: new Date(now - 12 * 24 * 60 * 60 * 1000).toISOString(), // 12 days ago - WARNING
 				lastWateredBy: 'D',
 				isOutOfService: false,
@@ -40,7 +37,6 @@ const ForkliftDashboard = () => {
 			},
 			{
 				id: 4,
-				number: 4,
 				lastWateringDate: new Date(now - 10 * 24 * 60 * 60 * 1000).toISOString(), // 10 days ago - WARNING
 				lastWateredBy: 'Chandimal',
 				isOutOfService: false,
@@ -49,7 +45,6 @@ const ForkliftDashboard = () => {
 			},
 			{
 				id: 5,
-				number: 5,
 				lastWateringDate: new Date(now - 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days ago - GOOD
 				lastWateredBy: 'DC',
 				isOutOfService: false,
@@ -58,7 +53,6 @@ const ForkliftDashboard = () => {
 			},
 			{
 				id: 6,
-				number: 6,
 				lastWateringDate: new Date(now - 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days ago - GOOD
 				lastWateredBy: 'Scott',
 				isOutOfService: false,
@@ -67,7 +61,6 @@ const ForkliftDashboard = () => {
 			},
 			{
 				id: 7,
-				number: 7,
 				lastWateringDate: new Date(now - 1 * 24 * 60 * 60 * 1000).toISOString(), // Yesterday - GOOD
 				lastWateredBy: 'John',
 				isOutOfService: false,
@@ -76,7 +69,6 @@ const ForkliftDashboard = () => {
 			},
 			{
 				id: 8,
-				number: 8,
 				lastWateringDate: now.toISOString(), // Today - GOOD
 				lastWateredBy: 'Paul',
 				isOutOfService: false,
@@ -85,7 +77,6 @@ const ForkliftDashboard = () => {
 			},
 			{
 				id: 9,
-				number: 9,
 				lastWateringDate: null, // Never watered - URGENT
 				lastWateredBy: null,
 				isOutOfService: false,
@@ -94,7 +85,6 @@ const ForkliftDashboard = () => {
 			},
 			{
 				id: 10,
-				number: 10,
 				lastWateringDate: new Date(now - 8 * 24 * 60 * 60 * 1000).toISOString(), // 8 days ago before service
 				lastWateredBy: 'User 1',
 				isOutOfService: true, // Currently out of service
@@ -103,7 +93,6 @@ const ForkliftDashboard = () => {
 			},
 			{
 				id: 11,
-				number: 11,
 				lastWateringDate: new Date(now - 20 * 24 * 60 * 60 * 1000).toISOString(), // 20 days ago
 				lastWateredBy: 'User 2',
 				isOutOfService: false, // Returned to service
@@ -278,7 +267,7 @@ const ForkliftDashboard = () => {
 					<tbody>
 						{activeForklifts.map(forklift => (
 							<tr key={forklift.id} className={getRowVariant(forklift)}>
-								<td className="fw-bold">Forklift #{forklift.number}</td>
+								<td className="fw-bold">Forklift #{forklift.id}</td>
 								<td>
 									<Badge bg={getBadgeVariant(forklift)}>{getStatusText(forklift)}</Badge>
 								</td>
@@ -321,7 +310,7 @@ const ForkliftDashboard = () => {
 						<tbody>
 							{outOfServiceForklifts.map(forklift => (
 								<tr key={forklift.id}>
-									<td className="fw-bold">Forklift #{forklift.number}</td>
+									<td className="fw-bold">Forklift #{forklift.id}</td>
 									<td>{formatDate(forklift.outOfServiceStartDate)}</td>
 									<td>
 										<Button 
@@ -341,7 +330,7 @@ const ForkliftDashboard = () => {
 
 			<Modal show={showServiceModal} onHide={() => setShowServiceModal(false)} centered>
 				<Modal.Header closeButton>
-					<Modal.Title>Change Service Status - Forklift #{selectedForklift?.number}</Modal.Title>
+					<Modal.Title>Change Service Status - Forklift #{selectedForklift?.id}</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					<p>
@@ -366,7 +355,7 @@ const ForkliftDashboard = () => {
 
 			<Modal show={showWaterModal} onHide={() => setShowWaterModal(false)} centered>
 				<Modal.Header closeButton>
-					<Modal.Title>Water Battery - Forklift #{selectedForklift?.number}</Modal.Title>
+					<Modal.Title>Water Battery - Forklift #{selectedForklift?.id}</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					<Form>
