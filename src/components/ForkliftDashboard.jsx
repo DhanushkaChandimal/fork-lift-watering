@@ -109,6 +109,8 @@ const ForkliftDashboard = () => {
     });
 	const [selectedForklift, setSelectedForklift] = useState(null);
 	const [showServiceModal, setShowServiceModal] = useState(false);
+	const [showWaterModal, setShowWaterModal] = useState(false);
+	const [userName, setUserName] = useState('');
 
 	const getDaysSinceWatering = (forklift) => {
 		if (!forklift.lastWateringDate) return Infinity;
@@ -173,6 +175,32 @@ const ForkliftDashboard = () => {
 		setSelectedForklift(null);
 	};
 
+	const handleWaterBattery = (forklift) => {
+		setSelectedForklift(forklift);
+		setShowWaterModal(true);
+	};
+
+	const confirmWaterBattery = () => {
+		if (!userName.trim()) {
+			alert('Please enter your name');
+			return;
+		}
+
+		setForklifts(prev => prev.map(f => 
+		f.id === selectedForklift.id 
+			? {
+				...f,
+				lastWateringDate: new Date().toISOString(),
+				lastWateredBy: userName,
+			}
+			: f
+		));
+
+		setShowWaterModal(false);
+		setUserName('');
+		setSelectedForklift(null);
+	};
+
 	const activeForklifts = forklifts
 		.filter(f => !f.isOutOfService)
 	
@@ -231,6 +259,7 @@ const ForkliftDashboard = () => {
 									<td className="actions-cell">
 										<button 
 											className="btn btn-primary"
+											onClick={() => handleWaterBattery(forklift)}
 										>
 											Water Battery
 										</button>
@@ -301,6 +330,36 @@ const ForkliftDashboard = () => {
 								Confirm
 							</button>
 							<button className="btn btn-secondary" onClick={() => setShowServiceModal(false)}>
+								Cancel
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
+
+			{showWaterModal && (
+				<div className="modal-overlay" onClick={() => setShowWaterModal(false)}>
+					<div className="modal" onClick={(e) => e.stopPropagation()}>
+						<h3>Water Battery - Forklift #{selectedForklift?.number}</h3>
+						<div className="modal-content">
+							<label htmlFor="userName">Your Name:</label>
+							<input
+								id="userName"
+								type="text"
+								value={userName}
+								onChange={(e) => setUserName(e.target.value)}
+								placeholder="Enter your name"
+								autoFocus
+							/>
+						</div>
+						<div className="modal-actions">
+							<button className="btn btn-primary" onClick={confirmWaterBattery}>
+								Confirm
+							</button>
+							<button className="btn btn-secondary" onClick={() => {
+								setShowWaterModal(false);
+								setUserName('');
+							}}>
 								Cancel
 							</button>
 						</div>
