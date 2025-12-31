@@ -119,6 +119,15 @@ const ForkliftDashboard = () => {
 		return diffDays;
   	};
 
+	const getStatusText = (forklift) => {
+		const days = getDaysSinceWatering(forklift);
+		
+		if (days === Infinity) return 'Needs Watering';
+		if (days === 0) return 'Watered Today';
+		if (days === 1) return 'Watered Yesterday';
+		return `${days} days ago`;
+	};
+
 	const getColorClass = (forklift) => {
 		const days = getDaysSinceWatering(forklift);
 		let status = 'good';
@@ -205,7 +214,7 @@ const ForkliftDashboard = () => {
 								<tr key={forklift.id} className={getColorClass(forklift)}>
 									<td className="forklift-number">Forklift #{forklift.number}</td>
 									<td>
-										<span>Needs watering</span>
+										<span className="status-badge">{getStatusText(forklift)}</span>
 									</td>
 									<td>{formatDate(forklift.lastWateringDate)}</td>
 									<td>{forklift.lastWateredBy || 'N/A'}</td>

@@ -101,6 +101,14 @@
   font-weight: 600;
 }
 
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 5px;
+  font-size: 13px;
+  background: rgba(0, 0, 0, 0.05);
+}
+
 /* Actions */
 .actions-cell {
   display: flex;
