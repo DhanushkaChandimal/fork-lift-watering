@@ -1,5 +1,10 @@
 import { useState } from "react";
-import '../styles/ForkliftDashboard.css';
+import Container from 'react-bootstrap/Container';
+import Table from 'react-bootstrap/Table';
+import Button from 'react-bootstrap/Button';
+import Badge from 'react-bootstrap/Badge';
+import Modal from 'react-bootstrap/Modal';
+import Form from 'react-bootstrap/Form';
 
 const ForkliftDashboard = () => {
 	const [forklifts, setForklifts] = useState(() => {
@@ -142,19 +147,26 @@ const ForkliftDashboard = () => {
 		return `${days} days ago`;
 	};
 
-	const getColorClass = (forklift) => {
+	const getBadgeVariant = (forklift) => {
 		const days = getDaysSinceWatering(forklift);
-		let status = 'good';
 		
 		if (days === Infinity || days >= 14) {
-			status =  'urgent';
-		}else if (days >= 10){
-			status = 'warning';
+			return 'danger';
+		} else if (days >= 10) {
+			return 'warning';
 		}
+		return 'success';
+	};
 
-		// console.log(forklift.number + "  -  " + status + "  -  " + days)
-
-		return `status-${status}`;
+	const getRowVariant = (forklift) => {
+		const days = getDaysSinceWatering(forklift);
+		
+		if (days === Infinity || days >= 14) {
+			return 'table-danger';
+		} else if (days >= 10) {
+			return 'table-warning';
+		}
+		return 'table-success';
 	};
 
 	const formatDate = (dateString) => {
@@ -230,160 +242,159 @@ const ForkliftDashboard = () => {
 	};
 
 	return (
-		<div className="forklift-dashboard">
-			<header className="dashboard-header">
-				<h1>Forklift Battery Watering Dashboard</h1>
-				<p className="subtitle">Batteries should be watered at least once every 2 weeks</p>
-			</header>
+		<Container fluid className="py-4">
+			<div className="text-center mb-4">
+				<h1 className="display-4 mb-3">Forklift Battery Watering Dashboard</h1>
+				<p className="lead text-muted">Batteries should be watered at least once every 2 weeks</p>
+			</div>
 
-			<div className="legend">
-				<div className="legend-item">
-					<span className="legend-color status-urgent"></span>
-					<span>Urgent (14+ days)</span>
+			<div className="d-flex justify-content-center gap-3 mb-4 flex-wrap">
+				<div className="d-flex align-items-center">
+					<Badge bg="danger" className="me-2">Urgent</Badge>
+					<span>14+ days</span>
 				</div>
-				<div className="legend-item">
-					<span className="legend-color status-warning"></span>
-					<span>Warning (10-13 days)</span>
+				<div className="d-flex align-items-center">
+					<Badge bg="warning" text="dark" className="me-2">Warning</Badge>
+					<span>10-13 days</span>
 				</div>
-				<div className="legend-item">
-					<span className="legend-color status-good"></span>
-					<span>Good (&lt;10 days)</span>
+				<div className="d-flex align-items-center">
+					<Badge bg="success" className="me-2">Good</Badge>
+					<span>&lt;10 days</span>
 				</div>
 			</div>
 
-			<section className="table-section">
-				<h2>Active Forklifts ({activeForklifts.length})</h2>
-				<div className="table-container">
-					<table className="forklift-table">
-						<thead>
+			<div className="mb-4">
+				<h2 className="h3 mb-3">Active Forklifts ({activeForklifts.length})</h2>
+				<Table striped bordered hover responsive>
+					<thead className="table-dark">
+						<tr>
+							<th>FORKLIFT #</th>
+							<th>STATUS</th>
+							<th>LAST WATERED</th>
+							<th>WATERED BY</th>
+							<th>ACTIONS</th>
+						</tr>
+					</thead>
+					<tbody>
+						{activeForklifts.map(forklift => (
+							<tr key={forklift.id} className={getRowVariant(forklift)}>
+								<td className="fw-bold">Forklift #{forklift.number}</td>
+								<td>
+									<Badge bg={getBadgeVariant(forklift)}>{getStatusText(forklift)}</Badge>
+								</td>
+								<td>{formatDate(forklift.lastWateringDate)}</td>
+								<td>{forklift.lastWateredBy || 'N/A'}</td>
+								<td>
+									<Button 
+										variant="primary"
+										size="sm"
+										className="me-2"
+										onClick={() => handleWaterBattery(forklift)}
+									>
+										Water Battery
+									</Button>
+									<Button 
+										variant="secondary"
+										size="sm"
+										onClick={() => handleServiceStatusToggle(forklift)}
+									>
+										Mark Out of Service
+									</Button>
+								</td>
+							</tr>
+						))}
+					</tbody>
+				</Table>
+			</div>
+
+			{outOfServiceForklifts.length > 0 && (
+				<div className="mb-4">
+					<h2 className="h3 mb-3">Out of Service Forklifts ({outOfServiceForklifts.length})</h2>
+					<Table striped bordered hover responsive>
+						<thead className="table-dark">
 							<tr>
 								<th>FORKLIFT #</th>
-								<th>STATUS</th>
-								<th>LAST WATERED</th>
-								<th>WATERED BY</th>
+								<th>OUT OF SERVICE SINCE</th>
 								<th>ACTIONS</th>
 							</tr>
 						</thead>
 						<tbody>
-							{activeForklifts.map(forklift => (
-								<tr key={forklift.id} className={getColorClass(forklift)}>
-									<td className="forklift-number">Forklift #{forklift.number}</td>
+							{outOfServiceForklifts.map(forklift => (
+								<tr key={forklift.id}>
+									<td className="fw-bold">Forklift #{forklift.number}</td>
+									<td>{formatDate(forklift.outOfServiceStartDate)}</td>
 									<td>
-										<span className="status-badge">{getStatusText(forklift)}</span>
-									</td>
-									<td>{formatDate(forklift.lastWateringDate)}</td>
-									<td>{forklift.lastWateredBy || 'N/A'}</td>
-									<td className="actions-cell">
-										<button 
-											className="btn btn-primary"
-											onClick={() => handleWaterBattery(forklift)}
-										>
-											Water Battery
-										</button>
-										<button 
-											className="btn btn-secondary"
+										<Button 
+											variant="success"
+											size="sm"
 											onClick={() => handleServiceStatusToggle(forklift)}
 										>
-											Mark Out of Service
-										</button>
+											Return to Service
+										</Button>
 									</td>
 								</tr>
 							))}
 						</tbody>
-					</table>
-				</div>
-			</section>
-
-			{outOfServiceForklifts.length > 0 && (
-				<section className="table-section">
-					<h2>Out of Service Forklifts ({outOfServiceForklifts.length})</h2>
-					<div className="table-container">
-						<table className="forklift-table">
-							<thead>
-								<tr>
-									<th>FORKLIFT #</th>
-									<th>OUT OF SERVICE SINCE</th>
-									<th>ACTIONS</th>
-								</tr>
-							</thead>
-							<tbody>
-								{outOfServiceForklifts.map(forklift => (
-									<tr key={forklift.id}>
-										<td className="forklift-number">Forklift #{forklift.number}</td>
-										<td>{formatDate(forklift.outOfServiceStartDate)}</td>
-										<td className="actions-cell">
-											<button 
-												className="btn btn-success"
-												onClick={() => handleServiceStatusToggle(forklift)}
-											>
-												Return to Service
-											</button>
-										</td>
-									</tr>
-								))}
-							</tbody>
-						</table>
-					</div>
-				</section>
-			)}
-
-			{showServiceModal && (
-				<div className="modal-overlay" onClick={() => setShowServiceModal(false)}>
-					<div className="modal" onClick={(e) => e.stopPropagation()}>
-						<h3>Change Service Status - Forklift #{selectedForklift?.number}</h3>
-						<div className="modal-content">
-						<p>
-							{selectedForklift?.isOutOfService 
-							? 'Are you sure you want to return this forklift to service?'
-							: 'Are you sure you want to mark this forklift as out of service?'
-							}
-						</p>
-						</div>
-						<div className="modal-actions">
-							<button 
-								className="btn btn-primary" 
-								onClick={() => confirmServiceStatusChange(selectedForklift?.isOutOfService ? 'in' : 'out')}
-							>
-								Confirm
-							</button>
-							<button className="btn btn-secondary" onClick={() => setShowServiceModal(false)}>
-								Cancel
-							</button>
-						</div>
-					</div>
+					</Table>
 				</div>
 			)}
 
-			{showWaterModal && (
-				<div className="modal-overlay" onClick={() => setShowWaterModal(false)}>
-					<div className="modal" onClick={(e) => e.stopPropagation()}>
-						<h3>Water Battery - Forklift #{selectedForklift?.number}</h3>
-						<div className="modal-content">
-							<label htmlFor="userName">Your Name:</label>
-							<input
-								id="userName"
+			<Modal show={showServiceModal} onHide={() => setShowServiceModal(false)} centered>
+				<Modal.Header closeButton>
+					<Modal.Title>Change Service Status - Forklift #{selectedForklift?.number}</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<p>
+						{selectedForklift?.isOutOfService 
+						? 'Are you sure you want to return this forklift to service?'
+						: 'Are you sure you want to mark this forklift as out of service?'
+						}
+					</p>
+				</Modal.Body>
+				<Modal.Footer>
+					<Button variant="secondary" onClick={() => setShowServiceModal(false)}>
+						Cancel
+					</Button>
+					<Button 
+						variant="primary" 
+						onClick={() => confirmServiceStatusChange(selectedForklift?.isOutOfService ? 'in' : 'out')}
+					>
+						Confirm
+					</Button>
+				</Modal.Footer>
+			</Modal>
+
+			<Modal show={showWaterModal} onHide={() => setShowWaterModal(false)} centered>
+				<Modal.Header closeButton>
+					<Modal.Title>Water Battery - Forklift #{selectedForklift?.number}</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<Form>
+						<Form.Group>
+							<Form.Label>Your Name:</Form.Label>
+							<Form.Control
 								type="text"
 								value={userName}
 								onChange={(e) => setUserName(e.target.value)}
 								placeholder="Enter your name"
 								autoFocus
 							/>
-						</div>
-						<div className="modal-actions">
-							<button className="btn btn-primary" onClick={confirmWaterBattery}>
-								Confirm
-							</button>
-							<button className="btn btn-secondary" onClick={() => {
-								setShowWaterModal(false);
-								setUserName('');
-							}}>
-								Cancel
-							</button>
-						</div>
-					</div>
-				</div>
-			)}
-		</div>
+						</Form.Group>
+					</Form>
+				</Modal.Body>
+				<Modal.Footer>
+					<Button variant="secondary" onClick={() => {
+						setShowWaterModal(false);
+						setUserName('');
+					}}>
+						Cancel
+					</Button>
+					<Button variant="primary" onClick={confirmWaterBattery}>
+						Confirm
+					</Button>
+				</Modal.Footer>
+			</Modal>
+		</Container>
 	);
 };
 
