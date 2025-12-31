@@ -107,6 +107,8 @@ const ForkliftDashboard = () => {
 			},
         ];
     });
+	const [selectedForklift, setSelectedForklift] = useState(null);
+	const [showServiceModal, setShowServiceModal] = useState(false);
 
 	const getDaysSinceWatering = (forklift) => {
 		if (!forklift.lastWateringDate) return Infinity;
@@ -149,35 +151,37 @@ const ForkliftDashboard = () => {
 		return date.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }) + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 	};
 
-	const activeForklifts = forklifts
-		.filter(f => !f.isOutOfService)
-	
-	const outOfServiceForklifts = forklifts
-		.filter(f => f.isOutOfService);
-
-	const handleServiceStatusToOut = (forklift) => {
+	const confirmServiceStatusChange = (action) => {
 		setForklifts(prev => prev.map(f => 
-		f.id === forklift.id 
+		f.id === selectedForklift.id 
+			? action === 'out'
 			? {
 				...f,
 				isOutOfService: true,
 				outOfServiceStartDate: new Date().toISOString(),
 				outOfServiceEndDate: null,
-			}
-			: f
-		));
-	};
-
-	const handleServiceStatusToIn = (forklift) => {
-		setForklifts(prev => prev.map(f => 
-		f.id === forklift.id 
-			? {
+				}
+			: {
 				...f,
 				isOutOfService: false,
 				outOfServiceEndDate: new Date().toISOString(),
-			}
+				}
 			: f
 		));
+
+		setShowServiceModal(false);
+		setSelectedForklift(null);
+	};
+
+	const activeForklifts = forklifts
+		.filter(f => !f.isOutOfService)
+	
+	const outOfServiceForklifts = forklifts
+		.filter(f => f.isOutOfService);
+	
+	const handleServiceStatusToggle = (forklift) => {
+		setSelectedForklift(forklift);
+		setShowServiceModal(true);
 	};
 
 	return (
@@ -232,7 +236,7 @@ const ForkliftDashboard = () => {
 										</button>
 										<button 
 											className="btn btn-secondary"
-											onClick={() => handleServiceStatusToOut(forklift)}
+											onClick={() => handleServiceStatusToggle(forklift)}
 										>
 											Mark Out of Service
 										</button>
@@ -264,7 +268,7 @@ const ForkliftDashboard = () => {
 										<td className="actions-cell">
 											<button 
 												className="btn btn-success"
-												onClick={() => handleServiceStatusToIn(forklift)}
+												onClick={() => handleServiceStatusToggle(forklift)}
 											>
 												Return to Service
 											</button>
@@ -275,6 +279,33 @@ const ForkliftDashboard = () => {
 						</table>
 					</div>
 				</section>
+			)}
+
+			{showServiceModal && (
+				<div className="modal-overlay" onClick={() => setShowServiceModal(false)}>
+					<div className="modal" onClick={(e) => e.stopPropagation()}>
+						<h3>Change Service Status - Forklift #{selectedForklift?.number}</h3>
+						<div className="modal-content">
+						<p>
+							{selectedForklift?.isOutOfService 
+							? 'Are you sure you want to return this forklift to service?'
+							: 'Are you sure you want to mark this forklift as out of service?'
+							}
+						</p>
+						</div>
+						<div className="modal-actions">
+							<button 
+								className="btn btn-primary" 
+								onClick={() => confirmServiceStatusChange(selectedForklift?.isOutOfService ? 'in' : 'out')}
+							>
+								Confirm
+							</button>
+							<button className="btn btn-secondary" onClick={() => setShowServiceModal(false)}>
+								Cancel
+							</button>
+						</div>
+					</div>
+				</div>
 			)}
 		</div>
 	);
