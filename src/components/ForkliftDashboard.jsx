@@ -149,6 +149,12 @@ const ForkliftDashboard = () => {
 		return date.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }) + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 	};
 
+	const activeForklifts = forklifts
+		.filter(f => !f.isOutOfService)
+	
+	const outOfServiceForklifts = forklifts
+		.filter(f => f.isOutOfService);
+
 	const handleServiceStatusToOut = (forklift) => {
 		setForklifts(prev => prev.map(f => 
 		f.id === forklift.id 
@@ -197,7 +203,7 @@ const ForkliftDashboard = () => {
 			</div>
 
 			<section className="table-section">
-				<h2>Active Forklifts</h2>
+				<h2>Active Forklifts ({activeForklifts.length})</h2>
 				<div className="table-container">
 					<table className="forklift-table">
 						<thead>
@@ -210,7 +216,7 @@ const ForkliftDashboard = () => {
 							</tr>
 						</thead>
 						<tbody>
-							{forklifts.filter(f => !f.isOutOfService).map(forklift => (
+							{activeForklifts.map(forklift => (
 								<tr key={forklift.id} className={getColorClass(forklift)}>
 									<td className="forklift-number">Forklift #{forklift.number}</td>
 									<td>
@@ -238,36 +244,38 @@ const ForkliftDashboard = () => {
 				</div>
 			</section>
 
-			<section className="table-section">
-				<h2>Out of Service Forklifts</h2>
-				<div className="table-container">
-					<table className="forklift-table">
-						<thead>
-							<tr>
-								<th>FORKLIFT #</th>
-								<th>OUT OF SERVICE SINCE</th>
-								<th>ACTIONS</th>
-							</tr>
-						</thead>
-						<tbody>
-							{forklifts.filter(f => f.isOutOfService).map(forklift => (
-								<tr key={forklift.id}>
-									<td className="forklift-number">Forklift #{forklift.number}</td>
-									<td>{formatDate(forklift.outOfServiceStartDate)}</td>
-									<td className="actions-cell">
-										<button 
-											className="btn btn-success"
-											onClick={() => handleServiceStatusToIn(forklift)}
-										>
-											Return to Service
-										</button>
-									</td>
+			{outOfServiceForklifts.length > 0 && (
+				<section className="table-section">
+					<h2>Out of Service Forklifts ({outOfServiceForklifts.length})</h2>
+					<div className="table-container">
+						<table className="forklift-table">
+							<thead>
+								<tr>
+									<th>FORKLIFT #</th>
+									<th>OUT OF SERVICE SINCE</th>
+									<th>ACTIONS</th>
 								</tr>
-							))}
-						</tbody>
-					</table>
-				</div>
-			</section>
+							</thead>
+							<tbody>
+								{outOfServiceForklifts.map(forklift => (
+									<tr key={forklift.id}>
+										<td className="forklift-number">Forklift #{forklift.number}</td>
+										<td>{formatDate(forklift.outOfServiceStartDate)}</td>
+										<td className="actions-cell">
+											<button 
+												className="btn btn-success"
+												onClick={() => handleServiceStatusToIn(forklift)}
+											>
+												Return to Service
+											</button>
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
+				</section>
+			)}
 		</div>
 	);
 };
