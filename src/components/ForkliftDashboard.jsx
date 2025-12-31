@@ -117,8 +117,18 @@ const ForkliftDashboard = () => {
 		
 		const lastWatering = new Date(forklift.lastWateringDate);
 		const today = new Date();
+		
+		let effectiveLastWatering = lastWatering;
+		
+		if (forklift.outOfServiceStartDate && forklift.outOfServiceEndDate) {
+			const outStart = new Date(forklift.outOfServiceStartDate);
+			const outEnd = new Date(forklift.outOfServiceEndDate);
+			const outOfServiceDays = Math.floor((outEnd - outStart) / (1000 * 60 * 60 * 24));
+			
+			effectiveLastWatering = new Date(lastWatering.getTime() + (outOfServiceDays * 24 * 60 * 60 * 1000));
+		}
     
-		const diffTime = Math.abs(today - lastWatering);
+		const diffTime = Math.abs(today - effectiveLastWatering);
 		const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 		return diffDays;
   	};
