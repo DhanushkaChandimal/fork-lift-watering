@@ -104,7 +104,9 @@ const ForkliftDashboard = () => {
 	const [selectedForklift, setSelectedForklift] = useState(null);
 	const [showServiceModal, setShowServiceModal] = useState(false);
 	const [showWaterModal, setShowWaterModal] = useState(false);
+	const [showAddForkliftModal, setShowAddForkliftModal] = useState(false);
 	const [userName, setUserName] = useState('');
+	const [newForkliftId, setNewForkliftId] = useState('');
 
 	const getDaysSinceWatering = (forklift) => {
 		if (!forklift.lastWateringDate) return Infinity;
@@ -230,6 +232,37 @@ const ForkliftDashboard = () => {
 		setShowServiceModal(true);
 	};
 
+	const handleAddForklift = () => {
+		setShowAddForkliftModal(true);
+	};
+
+	const confirmAddForklift = () => {
+		const id = parseInt(newForkliftId.trim());
+		
+		if (!id || isNaN(id)) {
+			alert('Please enter a valid forklift number');
+			return;
+		}
+
+		if (forklifts.some(f => f.id === id)) {
+			alert('Forklift with this number already exists');
+			return;
+		}
+
+		const newForklift = {
+			id: id,
+			lastWateringDate: null,
+			lastWateredBy: null,
+			isOutOfService: false,
+			outOfServiceStartDate: null,
+			outOfServiceEndDate: null,
+		};
+
+		setForklifts(prev => [...prev, newForklift]);
+		setShowAddForkliftModal(false);
+		setNewForkliftId('');
+	};
+
 	return (
 		<Container fluid className="py-4">
 			<div className="text-center mb-4">
@@ -253,7 +286,12 @@ const ForkliftDashboard = () => {
 			</div>
 
 			<div className="mb-4">
-				<h2 className="h3 mb-3">Active Forklifts ({activeForklifts.length})</h2>
+				<div className="d-flex justify-content-between align-items-center mb-3">
+					<h2 className="h3 mb-0">Active Forklifts ({activeForklifts.length})</h2>
+					<Button variant="success" onClick={handleAddForklift}>
+						+ Add Forklift
+					</Button>
+				</div>
 				<Table striped bordered hover responsive>
 					<thead className="table-dark">
 						<tr>
@@ -380,6 +418,40 @@ const ForkliftDashboard = () => {
 					</Button>
 					<Button variant="primary" onClick={confirmWaterBattery}>
 						Confirm
+					</Button>
+				</Modal.Footer>
+			</Modal>
+
+			<Modal show={showAddForkliftModal} onHide={() => setShowAddForkliftModal(false)} centered>
+				<Modal.Header closeButton>
+					<Modal.Title>Add New Forklift</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<Form>
+						<Form.Group>
+							<Form.Label>Forklift Number:</Form.Label>
+							<Form.Control
+								type="number"
+								value={newForkliftId}
+								onChange={(e) => setNewForkliftId(e.target.value)}
+								placeholder="Enter forklift number"
+								autoFocus
+							/>
+							<Form.Text className="text-muted">
+								Enter a unique number for the new forklift
+							</Form.Text>
+						</Form.Group>
+					</Form>
+				</Modal.Body>
+				<Modal.Footer>
+					<Button variant="secondary" onClick={() => {
+						setShowAddForkliftModal(false);
+						setNewForkliftId('');
+					}}>
+						Cancel
+					</Button>
+					<Button variant="success" onClick={confirmAddForklift}>
+						Add Forklift
 					</Button>
 				</Modal.Footer>
 			</Modal>
