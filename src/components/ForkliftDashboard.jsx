@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
+import '../styles/ForkliftDashboard.css';
 
 const ForkliftDashboard = () => {
 	const [forklifts, setForklifts] = useState(() => {
@@ -292,7 +293,7 @@ const ForkliftDashboard = () => {
 						+ Add Forklift
 					</Button>
 				</div>
-				<Table striped bordered hover responsive>
+				<Table striped bordered hover responsive size="sm">
 					<thead className="table-dark">
 						<tr>
 							<th>FORKLIFT #</th>
@@ -312,21 +313,24 @@ const ForkliftDashboard = () => {
 								<td>{formatDate(forklift.lastWateringDate)}</td>
 								<td>{forklift.lastWateredBy || 'N/A'}</td>
 								<td>
-									<Button 
-										variant="primary"
-										size="sm"
-										className="me-2"
-										onClick={() => handleWaterBattery(forklift)}
-									>
-										Water Battery
-									</Button>
-									<Button 
-										variant="secondary"
-										size="sm"
-										onClick={() => handleServiceStatusToggle(forklift)}
-									>
-										Mark Out of Service
-									</Button>
+									<div className="d-flex flex-column gap-1">
+										<Button 
+											variant="primary"
+											size="sm"
+											className="action-btn"
+											onClick={() => handleWaterBattery(forklift)}
+										>
+											Water
+										</Button>
+										<Button 
+											variant="secondary"
+											size="sm"
+											className="action-btn"
+											onClick={() => handleServiceStatusToggle(forklift)}
+										>
+											Out of Service
+										</Button>
+									</div>
 								</td>
 							</tr>
 						))}
