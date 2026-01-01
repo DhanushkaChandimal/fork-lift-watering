@@ -61,6 +61,17 @@ const Register = ({ onSwitchToSignIn }) => {
         setIsLoading(true);
 
         try {
+            // Check if user is already in the pending pool
+            const existingPendingUser = await pendingUsersService.getPendingUserByEmail(formData.email.trim());
+            
+            if (existingPendingUser) {
+                setErrors({
+                    general: "Your registration request is already pending. Please wait for an administrator to approve your account, or contact an administrator for assistance."
+                });
+                setIsLoading(false);
+                return;
+            }
+
             // Add user to pending registration pool
             await pendingUsersService.addPendingUser({
                 displayName: formData.displayName.trim(),

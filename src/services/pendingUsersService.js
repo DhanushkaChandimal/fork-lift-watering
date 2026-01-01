@@ -2,7 +2,7 @@ import { collection, addDoc, getDocs, deleteDoc, doc } from 'firebase/firestore'
 import { db } from '../lib/firebaseConfig';
 
 const PENDING_USERS_COLLECTION = 'pendingUsers';
-const MAX_PENDING_USERS = 1;
+const MAX_PENDING_USERS = 10;
 
 export const pendingUsersService = {
     // Check if pending pool is full
