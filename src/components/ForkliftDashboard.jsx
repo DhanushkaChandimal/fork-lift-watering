@@ -17,6 +17,7 @@ const ForkliftDashboard = ({ user }) => {
 	const [newForkliftId, setNewForkliftId] = useState('');
 	const [generatedForkliftId, setGeneratedForkliftId] = useState(null);
 	const [wateringDate, setWateringDate] = useState(new Date().toISOString().split('T')[0]);
+	const [serviceDate, setServiceDate] = useState(new Date().toISOString().split('T')[0]);
 	
 	const { data: forklifts = [], isLoading, error } = useForklifts();
 	const { mutate: createForklift } = useCreateForklift();
@@ -81,15 +82,18 @@ const ForkliftDashboard = ({ user }) => {
 	};
 
 	const confirmServiceStatusChange = (action) => {
+		// Convert selected date to ISO string with current time
+		const selectedDate = new Date(serviceDate + 'T' + new Date().toTimeString().split(' ')[0]);
+
 		const updates = action === 'out'
 			? {
 				isOutOfService: true,
-				outOfServiceStartDate: new Date().toISOString(),
+				outOfServiceStartDate: selectedDate.toISOString(),
 				outOfServiceEndDate: null,
 			}
 			: {
 				isOutOfService: false,
-				outOfServiceEndDate: new Date().toISOString(),
+				outOfServiceEndDate: selectedDate.toISOString(),
 			};
 
 		updateForklift(
@@ -146,6 +150,7 @@ const ForkliftDashboard = ({ user }) => {
 	
 	const handleServiceStatusToggle = (forklift) => {
 		setSelectedForklift(forklift);
+		setServiceDate(new Date().toISOString().split('T')[0]);
 		setShowServiceModal(true);
 	};
 
@@ -352,8 +357,21 @@ const ForkliftDashboard = ({ user }) => {
 								? 'Are you sure you want to return this forklift to service?'
 								: 'Are you sure you want to mark this forklift as out of service?'
 								}
-							</p>
-						</Modal.Body>
+							</p>						
+						<Form.Group className="mb-3">
+							<Form.Label><strong>
+								{selectedForklift?.isOutOfService ? 'Return to Service Date' : 'Out of Service Date'}
+							</strong></Form.Label>
+							<Form.Control
+								type="date"
+								value={serviceDate}
+								onChange={(e) => setServiceDate(e.target.value)}
+								max={new Date().toISOString().split('T')[0]}
+							/>
+							<Form.Text className="text-muted">
+								You can only select today or past dates
+							</Form.Text>
+						</Form.Group>						</Modal.Body>
 						<Modal.Footer>
 							<Button variant="secondary" onClick={() => setShowServiceModal(false)}>
 								Cancel
