@@ -15,6 +15,7 @@ const ForkliftDashboard = () => {
 	const [showAddForkliftModal, setShowAddForkliftModal] = useState(false);
 	const [userName, setUserName] = useState('');
 	const [newForkliftId, setNewForkliftId] = useState('');
+	const [generatedForkliftId, setGeneratedForkliftId] = useState(null);
 	
 	const { data: forklifts = [], isLoading, error } = useForklifts();
 	const { mutate: createForklift } = useCreateForklift();
@@ -148,24 +149,28 @@ const ForkliftDashboard = () => {
 	};
 
 	const handleAddForklift = () => {
+		const maxId = forklifts.length > 0 ? Math.max(...forklifts.map(f => f.id)) : 0;
+		const nextId = maxId + 1;
+		setGeneratedForkliftId(nextId);
+		setNewForkliftId('');
 		setShowAddForkliftModal(true);
 	};
 
 	const confirmAddForklift = () => {
-		const id = parseInt(newForkliftId.trim());
+		const typedId = parseInt(newForkliftId.trim());
 		
-		if (!id || isNaN(id)) {
-			alert('Please enter a valid forklift number');
+		if (!newForkliftId.trim() || isNaN(typedId)) {
+			alert('Please enter the forklift number to confirm');
 			return;
 		}
 
-		if (forklifts.some(f => f.id === id)) {
-			alert('Forklift with this number already exists');
+		if (typedId !== generatedForkliftId) {
+			alert(`Please type the exact forklift number shown (${generatedForkliftId}) to confirm`);
 			return;
 		}
 
 		const newForklift = {
-			id: id,
+			id: generatedForkliftId,
 			lastWateringDate: null,
 			lastWateredBy: null,
 			isOutOfService: false,
@@ -173,14 +178,12 @@ const ForkliftDashboard = () => {
 			outOfServiceEndDate: null,
 		};
 
-		console.log("11111111111111")
-
 		createForklift(newForklift, {
 			onSuccess: () => {
-				console.log("22222222222222")
 				alert('Forklift created successfully!');
 				setShowAddForkliftModal(false);
 				setNewForkliftId('');
+				setGeneratedForkliftId(null);
 			}
 		});
 	};
@@ -382,23 +385,30 @@ const ForkliftDashboard = () => {
 						</Modal.Footer>
 					</Modal>
 
-					<Modal show={showAddForkliftModal} onHide={() => setShowAddForkliftModal(false)} centered>
+					<Modal show={showAddForkliftModal} onHide={() => {
+						setShowAddForkliftModal(false);
+						setNewForkliftId('');
+						setGeneratedForkliftId(null);
+					}} centered>
 						<Modal.Header closeButton>
 							<Modal.Title>Add New Forklift</Modal.Title>
 						</Modal.Header>
 						<Modal.Body>
+							<div className="alert alert-info mb-3">
+								<strong>Next Forklift Number: {generatedForkliftId}</strong>
+							</div>
 							<Form>
 								<Form.Group>
-									<Form.Label>Forklift Number:</Form.Label>
+									<Form.Label>Type the forklift number to confirm:</Form.Label>
 									<Form.Control
 										type="number"
 										value={newForkliftId}
 										onChange={(e) => setNewForkliftId(e.target.value)}
-										placeholder="Enter forklift number"
+										placeholder={`Type ${generatedForkliftId} to confirm`}
 										autoFocus
 									/>
 									<Form.Text className="text-muted">
-										Enter a unique number for the new forklift
+										Please type the forklift number shown above to confirm adding it
 									</Form.Text>
 								</Form.Group>
 							</Form>
@@ -407,6 +417,7 @@ const ForkliftDashboard = () => {
 							<Button variant="secondary" onClick={() => {
 								setShowAddForkliftModal(false);
 								setNewForkliftId('');
+								setGeneratedForkliftId(null);
 							}}>
 								Cancel
 							</Button>
