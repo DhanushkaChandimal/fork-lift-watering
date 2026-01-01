@@ -372,10 +372,15 @@ const ForkliftDashboard = ({ user }) => {
 								type="date"
 								value={serviceDate}
 								onChange={(e) => setServiceDate(e.target.value)}
+								min={selectedForklift?.isOutOfService && selectedForklift?.outOfServiceStartDate 
+									? new Date(selectedForklift.outOfServiceStartDate).toISOString().split('T')[0]
+									: undefined}
 								max={new Date().toISOString().split('T')[0]}
 							/>
 							<Form.Text className="text-muted">
-								You can only select today or past dates
+								{selectedForklift?.isOutOfService 
+									? 'Select a date on or after the out-of-service date'
+									: 'You can only select today or past dates'}
 							</Form.Text>
 						</Form.Group>						</Modal.Body>
 						<Modal.Footer>
