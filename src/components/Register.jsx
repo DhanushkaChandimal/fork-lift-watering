@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from "firebase/auth";
-import { auth } from "../lib/firebaseConfig";
+import { pendingUsersService } from "../services/pendingUsersService";
 
 const Register = ({ onSwitchToSignIn }) => {
     const [formData, setFormData] = useState({
@@ -62,18 +61,12 @@ const Register = ({ onSwitchToSignIn }) => {
         setIsLoading(true);
 
         try {
-            const userCredential = await createUserWithEmailAndPassword(
-                auth, 
-                formData.email, 
-                formData.password
-            );
-
-            await updateProfile(userCredential.user, {
-                displayName: formData.displayName.trim()
+            // Add user to pending registration pool
+            await pendingUsersService.addPendingUser({
+                displayName: formData.displayName.trim(),
+                email: formData.email.trim(),
+                password: formData.password // Note: In production, you should hash this or handle it more securely
             });
-
-            // Send email verification
-            await sendEmailVerification(userCredential.user);
 
             setFormData({
                 displayName: "",
@@ -81,7 +74,13 @@ const Register = ({ onSwitchToSignIn }) => {
                 password: "",
                 confirmPassword: ""
             });
-            alert("Registration successful! Please check your email to verify your account before signing in.");
+            
+            alert("Registration request submitted! An administrator will review and approve your account. You will be able to sign in after approval.");
+            
+            // Switch back to sign in page
+            if (onSwitchToSignIn) {
+                onSwitchToSignIn();
+            }
         } catch (err) {
             const errorMessage = err?.message || 'An unknown error occurred';
             setErrors({general: errorMessage});

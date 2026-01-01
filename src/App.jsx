@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { Route, Routes, Navigate } from "react-router-dom";
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './lib/firebaseConfig';
+import { isAdmin } from './lib/adminConfig';
 import ForkliftDashboard from "./components/ForkliftDashboard";
 import SignIn from "./components/SignIn";
 import Register from "./components/Register";
 import NavigationBar from "./components/Navbar";
 import EmailVerification from "./components/EmailVerification";
+import AdminPanel from "./components/AdminPanel";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -50,6 +52,16 @@ function App() {
               <Register onSwitchToSignIn={() => setShowRegister(false)} />
             ) : (
               <SignIn onSwitchToRegister={() => setShowRegister(true)} />
+            )
+          }
+        />
+        <Route 
+          path='/admin' 
+          element={
+            user && isAdmin(user) ? (
+              <AdminPanel user={user} />
+            ) : (
+              <Navigate to="/" replace />
             )
           }
         />

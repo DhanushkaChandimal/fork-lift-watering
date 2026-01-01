@@ -1,5 +1,6 @@
 import { signOut } from 'firebase/auth';
 import { auth } from '../lib/firebaseConfig';
+import { isAdmin } from '../lib/adminConfig';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -28,6 +29,14 @@ const NavigationBar = ({ user }) => {
                         <Navbar.Toggle aria-controls="basic-navbar-nav" />
                         <Navbar.Collapse id="basic-navbar-nav">
                             <Nav className="ms-auto align-items-center">
+                                <Nav.Link href="/" className="text-light me-3">
+                                    <small>🏠 Dashboard</small>
+                                </Nav.Link>
+                                {isAdmin(user) && (
+                                    <Nav.Link href="/admin" className="text-light me-3">
+                                        <small>📋 Admin Panel</small>
+                                    </Nav.Link>
+                                )}
                                 <Nav.Item className="text-light me-3">
                                     <small>
                                         Welcome, <strong>{user.displayName || user.email}</strong>
