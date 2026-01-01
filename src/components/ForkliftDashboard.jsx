@@ -31,12 +31,18 @@ const ForkliftDashboard = ({ user }) => {
 		
 		let effectiveLastWatering = lastWatering;
 		
+		// If forklift was out of service and returned, only add the out-of-service period
+		// if the watering happened BEFORE going out of service
 		if (forklift.outOfServiceStartDate && forklift.outOfServiceEndDate) {
 			const outStart = new Date(forklift.outOfServiceStartDate);
 			const outEnd = new Date(forklift.outOfServiceEndDate);
-			const outOfServiceDays = Math.floor((outEnd - outStart) / (1000 * 60 * 60 * 24));
 			
-			effectiveLastWatering = new Date(lastWatering.getTime() + (outOfServiceDays * 24 * 60 * 60 * 1000));
+			// Only adjust if the watering date is before the out-of-service start date
+			if (lastWatering < outStart) {
+				const outOfServiceDays = Math.floor((outEnd - outStart) / (1000 * 60 * 60 * 24));
+				effectiveLastWatering = new Date(lastWatering.getTime() + (outOfServiceDays * 24 * 60 * 60 * 1000));
+			}
+			// If watered after returning to service, use the actual watering date (no adjustment)
 		}
     
 		const diffTime = Math.abs(today - effectiveLastWatering);
