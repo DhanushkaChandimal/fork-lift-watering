@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../lib/firebaseConfig";
+import { pendingUsersService } from "../services/pendingUsersService";
 
 const SignIn = ({ onSwitchToRegister }) => {
     const [formData, setFormData] = useState({
@@ -59,33 +60,44 @@ const SignIn = ({ onSwitchToRegister }) => {
             
             // Handle Firebase auth errors with user-friendly messages
             if (err.code) {
-                switch (err.code) {
-                    case 'auth/invalid-email':
-                        errorMessage = 'Invalid email address format.';
-                        break;
-                    case 'auth/user-disabled':
-                        errorMessage = 'This account has been disabled. Please contact an administrator.';
-                        break;
-                    case 'auth/user-not-found':
-                        errorMessage = 'No account found with this email. Please check your email or register for a new account.';
-                        break;
-                    case 'auth/wrong-password':
-                        errorMessage = 'Incorrect password. Please try again.';
-                        break;
-                    case 'auth/invalid-credential':
+                // Check if user is in pending pool for invalid credential error
+                if (err.code === 'auth/invalid-credential') {
+                    try {
+                        const pendingUser = await pendingUsersService.getPendingUserByEmail(formData.email);
+                        if (pendingUser) {
+                            errorMessage = 'Your registration is pending admin approval. Please wait for an administrator to approve your account before signing in.';
+                        } else {
+                            errorMessage = 'Invalid email or password. Please check your credentials and try again.';
+                        }
+                    } catch {
                         errorMessage = 'Invalid email or password. Please check your credentials and try again.';
-                        break;
-                    case 'auth/too-many-requests':
-                        errorMessage = 'Too many failed login attempts. Please try again later or reset your password.';
-                        break;
-                    case 'auth/network-request-failed':
-                        errorMessage = 'Network error. Please check your internet connection and try again.';
-                        break;
-                    case 'auth/email-not-verified':
-                        errorMessage = 'Please verify your email address before signing in. Check your inbox for the verification email.';
-                        break;
-                    default:
-                        errorMessage = err.message || 'Failed to sign in. Please try again.';
+                    }
+                } else {
+                    switch (err.code) {
+                        case 'auth/invalid-email':
+                            errorMessage = 'Invalid email address format.';
+                            break;
+                        case 'auth/user-disabled':
+                            errorMessage = 'This account has been disabled. Please contact an administrator.';
+                            break;
+                        case 'auth/user-not-found':
+                            errorMessage = 'No account found with this email. Please check your email or register for a new account.';
+                            break;
+                        case 'auth/wrong-password':
+                            errorMessage = 'Incorrect password. Please try again.';
+                            break;
+                        case 'auth/too-many-requests':
+                            errorMessage = 'Too many failed login attempts. Please try again later or reset your password.';
+                            break;
+                        case 'auth/network-request-failed':
+                            errorMessage = 'Network error. Please check your internet connection and try again.';
+                            break;
+                        case 'auth/email-not-verified':
+                            errorMessage = 'Please verify your email address before signing in. Check your inbox for the verification email.';
+                            break;
+                        default:
+                            errorMessage = err.message || 'Failed to sign in. Please try again.';
+                    }
                 }
             }
             
