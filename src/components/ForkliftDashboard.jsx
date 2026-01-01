@@ -220,9 +220,11 @@ const ForkliftDashboard = () => {
 					<div className="mb-4">
 						<div className="d-flex justify-content-between align-items-center mb-3">
 							<h2 className="h3 mb-0">Active Forklifts ({activeForklifts.length})</h2>
-							<Button variant="success" onClick={handleAddForklift}>
-								+ Add Forklift
-							</Button>
+							{!error && (
+								<Button variant="success" onClick={handleAddForklift}>
+									+ Add Forklift
+								</Button>
+							)}
 						</div>
 						<Table striped bordered hover responsive size="sm">
 							<thead className="table-dark">
@@ -235,13 +237,13 @@ const ForkliftDashboard = () => {
 								</tr>
 							</thead>
 							<tbody>
-								{activeForklifts.length === 0 ? (
+								{activeForklifts.length === 0 && !error ? (
 									<tr>
 										<td colSpan="5" className="text-center py-4 text-muted">
 											No active forklifts found. Click "+ Add Forklift" to add one.
 										</td>
 									</tr>
-								) : (
+								) : activeForklifts.length > 0 ? (
 									activeForklifts.map(forklift => (
 										<tr key={forklift.id} className={getRowVariant(forklift)}>
 											<td className="fw-bold">Forklift #{forklift.id}</td>
@@ -276,14 +278,19 @@ const ForkliftDashboard = () => {
 											</td>
 										</tr>
 									))
-								)}
+								) : null}
 							</tbody>
 						</Table>
 					</div>
 
 					{error && (
-						<div className="alert alert-danger" role="alert">
+						<div className="alert alert-danger text-center" role="alert">
 							Error loading forklifts: {error.message}
+							<div className="mt-3">
+								<Button variant="primary" onClick={() => window.location.reload()}>
+									🔄 Refresh Page
+								</Button>
+							</div>
 						</div>
 					)}
 
