@@ -5,6 +5,7 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
+import '../styles/App.css';
 
 const NavigationBar = ({ user }) => {
     const handleSignOut = async () => {
@@ -17,11 +18,11 @@ const NavigationBar = ({ user }) => {
     };
 
     return (
-        <Navbar bg="dark" variant="dark" expand="lg" className="shadow-sm">
+        <Navbar className="navbar-sams" variant="dark" expand="lg">
             <Container fluid>
-                <Navbar.Brand href="/" className="fw-bold">
-                    🔋 <span className="d-none d-sm-inline">Forklift Battery System</span>
-                    <span className="d-inline d-sm-none">FBWS</span>
+                <Navbar.Brand href="/" className="navbar-brand-sams">
+                    ⚡ <span className="d-none d-sm-inline">Forklift Battery System</span>
+                    <span className="d-inline d-sm-none">FBS</span>
                 </Navbar.Brand>
                 
                 {user && (
@@ -29,21 +30,24 @@ const NavigationBar = ({ user }) => {
                         <Navbar.Toggle aria-controls="basic-navbar-nav" />
                         <Navbar.Collapse id="basic-navbar-nav">
                             <Nav className="ms-auto align-items-center">
-                                <Nav.Link href="/" className="text-light me-3">
-                                    <small>🏠 Dashboard</small>
+                                <Nav.Link href="/" className="nav-link-sams">
+                                    🏠 Dashboard
                                 </Nav.Link>
                                 {isAdmin(user) && (
-                                    <Nav.Link href="/admin" className="text-light me-3">
-                                        <small>📋 Admin Panel</small>
+                                    <Nav.Link href="/admin" className="nav-link-sams">
+                                        📋 Admin Panel
                                     </Nav.Link>
                                 )}
                                 <Nav.Item className="text-light me-3">
-                                    <small>
-                                        Welcome, <strong>{user.displayName || user.email}</strong>
-                                    </small>
+                                    Welcome, <strong>{user.displayName || user.email}</strong>
                                 </Nav.Item>
                                 <Nav.Item>
-                                    <Button variant="outline-light" size="sm" onClick={handleSignOut}>
+                                    <Button 
+                                        variant="light" 
+                                        size="sm" 
+                                        onClick={handleSignOut}
+                                        className="btn-fw-600"
+                                    >
                                         Sign Out
                                     </Button>
                                 </Nav.Item>

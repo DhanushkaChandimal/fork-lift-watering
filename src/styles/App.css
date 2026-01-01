@@ -1,0 +1,366 @@
+/* Sam's Club Inspired Global Styles */
+:root {
+    --sams-blue: #0067a0;
+    --sams-dark-blue: #004c75;
+    --sams-light-blue: #e6f2f8;
+    --sams-accent: #0091da;
+    --sams-text: #333;
+    --sams-success: #28a745;
+    --sams-warning: #ffc107;
+    --sams-danger: #dc3545;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #f5f7fa;
+}
+
+/* Dashboard Styles */
+.dashboard-container {
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #f5f7fa 0%, #ffffff 100%);
+    padding-bottom: 2rem;
+}
+
+.dashboard-header {
+    background: linear-gradient(135deg, var(--sams-blue) 0%, var(--sams-dark-blue) 100%);
+    color: white;
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 103, 160, 0.2);
+}
+
+.dashboard-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.95;
+}
+
+.dashboard-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.dashboard-table {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table-header-blue {
+    background: var(--sams-blue) !important;
+    color: white !important;
+}
+
+.btn-sams-primary {
+    background: linear-gradient(135deg, var(--sams-blue) 0%, var(--sams-accent) 100%);
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 103, 160, 0.2);
+}
+
+.btn-sams-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 103, 160, 0.3);
+}
+
+.btn-sams-secondary {
+    background: #6c757d;
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.btn-sams-secondary:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+}
+
+/* Navbar Styles */
+.navbar-sams {
+    background: linear-gradient(135deg, var(--sams-blue) 0%, var(--sams-dark-blue) 100%) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    padding: 0.75rem 0;
+}
+
+.navbar-brand-sams {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white !important;
+}
+
+.nav-link-sams {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    padding: 0.5rem 1rem !important;
+    border-radius: 6px;
+}
+
+.nav-link-sams:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white !important;
+}
+
+/* Modal Styles */
+.modal-sams .modal-header {
+    background: var(--sams-blue);
+    color: white;
+    border-radius: 12px 12px 0 0;
+}
+
+.modal-sams .modal-title {
+    font-weight: 600;
+}
+
+.modal-sams .btn-close {
+    filter: brightness(0) invert(1);
+}
+
+/* Table Styles */
+.table-row-danger {
+    background-color: #f8d7da !important;
+}
+
+.table-row-warning {
+    background-color: #fff3cd !important;
+}
+
+.table-row-success {
+    background-color: #d1e7dd !important;
+}
+
+/* Badge Styles */
+.badge-sams-danger {
+    background-color: var(--sams-danger);
+    font-weight: 600;
+    padding: 0.5rem 0.75rem;
+}
+
+.badge-sams-warning {
+    background-color: var(--sams-warning);
+    color: #000;
+    font-weight: 600;
+    padding: 0.5rem 0.75rem;
+}
+
+.badge-sams-success {
+    background-color: var(--sams-success);
+    font-weight: 600;
+    padding: 0.5rem 0.75rem;
+}
+
+.badge-sams-info {
+    background-color: var(--sams-accent);
+    font-weight: 600;
+    padding: 0.5rem 0.75rem;
+}
+
+/* Alert Styles */
+.alert-sams-info {
+    background-color: var(--sams-light-blue);
+    border: 1px solid var(--sams-accent);
+    color: var(--sams-dark-blue);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+/* Email Verification Styles */
+.verification-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--sams-blue) 0%, var(--sams-dark-blue) 100%);
+}
+
+.verification-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    padding: 3rem;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+}
+
+.verification-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.verification-title {
+    color: var(--sams-blue);
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+/* Admin Panel Styles */
+.admin-container {
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #f5f7fa 0%, #ffffff 100%);
+    padding: 2rem 0;
+}
+
+.admin-header {
+    background: linear-gradient(135deg, var(--sams-blue) 0%, var(--sams-dark-blue) 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 103, 160, 0.2);
+}
+
+.admin-table-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+/* Loading Spinner */
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50vh;
+}
+
+.spinner-sams {
+    width: 3rem;
+    height: 3rem;
+    border: 4px solid rgba(0, 103, 160, 0.2);
+    border-top-color: var(--sams-blue);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Footer Styles */
+.footer-sams {
+    background: #f8f9fa;
+    padding: 1.5rem 0;
+    margin-top: 3rem;
+    border-top: 2px solid var(--sams-blue);
+}
+
+.footer-text {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .dashboard-title {
+        font-size: 1.8rem;
+    }
+    
+    .dashboard-subtitle {
+        font-size: 1rem;
+    }
+    
+    .dashboard-card {
+        padding: 1rem;
+    }
+}
+
+/* Dashboard specific styles */
+.action-btn {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    white-space: nowrap;
+}
+
+.mobile-watering-info {
+    font-size: 0.7rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+
+.dashboard-section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.dashboard-section-title-with-margin {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.admin-panel-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.admin-panel-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.95;
+    margin-bottom: 0;
+}
+
+.verification-text-muted {
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.verification-email {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.verification-description {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+}
+
+.verification-tip {
+    color: #999;
+    font-size: 0.85rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0;
+}
+
+.btn-full-width {
+    width: 100%;
+}
+
+.btn-fw-600 {
+    font-weight: 600;
+}
+
+.alert-rounded {
+    border-radius: 8px;
+}

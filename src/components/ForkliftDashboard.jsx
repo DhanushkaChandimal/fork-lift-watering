@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
-import '../styles/ForkliftDashboard.css';
+import '../styles/App.css';
 import { useCreateForklift, useForklifts, useUpdateForklift } from "../hooks/useForklift";
 import { isAdmin } from '../lib/adminConfig';
 
@@ -192,48 +192,48 @@ const ForkliftDashboard = ({ user }) => {
 	};
 
 	return (
-		<Container fluid className="pt-4 mb-0">
+		<Container fluid className="dashboard-container pt-4">
 			{isLoading && (
-				<div className="text-center py-5">
-					<div className="spinner-border text-primary" role="status">
-						<span className="visually-hidden">Loading...</span>
-					</div>
+				<div className="loading-container">
+					<div className="spinner-sams"></div>
 				</div>
 			)}
 
 			{!isLoading && (
 				<>
-					<div className="text-center mb-4">
-						<h1 className="display-4 mb-3">Forklift Battery Watering Dashboard</h1>
-						<p className="lead text-muted">Batteries should be watered at least once every 2 weeks</p>
+					<div className="dashboard-header text-center">
+						<h1 className="dashboard-title">⚡ Forklift Battery Management</h1>
+						<p className="dashboard-subtitle">Batteries should be watered at least once every 2 weeks</p>
 					</div>
 
 					<div className="d-flex justify-content-center gap-3 mb-4 flex-wrap">
 						<div className="d-flex align-items-center">
-							<Badge bg="danger" className="me-2">Urgent</Badge>
+							<Badge className="badge-sams-danger me-2">Urgent</Badge>
 							<span>14+ days</span>
 						</div>
 						<div className="d-flex align-items-center">
-							<Badge bg="warning" text="dark" className="me-2">Warning</Badge>
+							<Badge className="badge-sams-warning me-2">Warning</Badge>
 							<span>10-13 days</span>
 						</div>
 						<div className="d-flex align-items-center">
-							<Badge bg="success" className="me-2">Good</Badge>
+							<Badge className="badge-sams-success me-2">Good</Badge>
 							<span>&lt;10 days</span>
 						</div>
 					</div>
 
-					<div className="mb-4">
+					<div className="dashboard-card">
 						<div className="d-flex justify-content-between align-items-center mb-3">
-							<h2 className="h3 mb-0">Active Forklifts ({activeForklifts.length})</h2>
+							<h2 className="dashboard-section-title">
+								Active Forklifts ({activeForklifts.length})
+							</h2>
 							{!error && isAdmin(user) && (
-								<Button variant="success" onClick={handleAddForklift}>
+								<Button className="btn-sams-primary" onClick={handleAddForklift}>
 									+ Add Forklift
 								</Button>
 							)}
 						</div>
-						<Table striped bordered hover responsive size="sm">
-							<thead className="table-dark">
+						<Table striped bordered hover responsive size="sm" className="dashboard-table">
+							<thead className="table-header-blue">
 								<tr>
 									<th>FORKLIFT #</th>
 									<th>STATUS</th>
@@ -304,10 +304,12 @@ const ForkliftDashboard = ({ user }) => {
 					)}
 
 					{outOfServiceForklifts.length > 0 && (
-						<div className="mb-4">
-							<h2 className="h3 mb-3">Out of Service Forklifts ({outOfServiceForklifts.length})</h2>
-							<Table striped bordered hover responsive>
-								<thead className="table-dark">
+						<div className="dashboard-card">
+							<h2 className="dashboard-section-title-with-margin">
+								Out of Service Forklifts ({outOfServiceForklifts.length})
+							</h2>
+							<Table striped bordered hover responsive className="dashboard-table">
+								<thead className="table-header-blue">
 									<tr>
 										<th>FORKLIFT #</th>
 										<th>OUT OF SERVICE SINCE</th>
@@ -335,7 +337,7 @@ const ForkliftDashboard = ({ user }) => {
 						</div>
 					)}
 
-					<Modal show={showServiceModal} onHide={() => setShowServiceModal(false)} centered>
+					<Modal show={showServiceModal} onHide={() => setShowServiceModal(false)} centered className="modal-sams">
 						<Modal.Header closeButton>
 							<Modal.Title>Change Service Status - Forklift #{selectedForklift?.id}</Modal.Title>
 						</Modal.Header>
@@ -360,7 +362,7 @@ const ForkliftDashboard = ({ user }) => {
 						</Modal.Footer>
 					</Modal>
 
-					<Modal show={showWaterModal} onHide={() => setShowWaterModal(false)} centered>
+					<Modal show={showWaterModal} onHide={() => setShowWaterModal(false)} centered className="modal-sams">
 						<Modal.Header closeButton>
 							<Modal.Title>Water Battery - Forklift #{selectedForklift?.id}</Modal.Title>
 						</Modal.Header>
@@ -387,7 +389,7 @@ const ForkliftDashboard = ({ user }) => {
 						setShowAddForkliftModal(false);
 						setNewForkliftId('');
 						setGeneratedForkliftId(null);
-					}} centered>
+					}} centered className="modal-sams">
 						<Modal.Header closeButton>
 							<Modal.Title>Add New Forklift</Modal.Title>
 						</Modal.Header>
@@ -425,13 +427,15 @@ const ForkliftDashboard = ({ user }) => {
 						</Modal.Footer>
 					</Modal>
 
-					<footer className="text-center mt-5 py-3 border-top">
-						<p className="text-muted mb-0">
-							© {new Date().getFullYear()} Forklift Battery Watering System. All rights reserved.
-						</p>
-						<p className="text-muted small mb-0">
-							Created by Dhanushka for Sam's Club 6259
-						</p>
+					<footer className="footer-sams">
+						<Container>
+							<p className="footer-text text-center mb-1">
+								© {new Date().getFullYear()} Forklift Battery Watering System. All rights reserved.
+							</p>
+							<p className="footer-text text-center mb-0">
+								Created by Dhanushka for Sam's Club 6259
+							</p>
+						</Container>
 					</footer>
 				</>
 			)}

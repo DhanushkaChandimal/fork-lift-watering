@@ -7,6 +7,7 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
 import Alert from 'react-bootstrap/Alert';
+import '../styles/App.css';
 
 const AdminPanel = () => {
     const [pendingUsers, setPendingUsers] = useState([]);
@@ -114,74 +115,83 @@ const AdminPanel = () => {
     };
 
     return (
-        <Container fluid className="py-4">
-            <div className="text-center mb-4">
-                <h1 className="display-5 mb-3">Admin Panel - Pending Registrations</h1>
-                <p className="text-muted">
+        <Container fluid className="admin-container">
+            <div className="admin-header text-center">
+                <h1 className="admin-panel-title">
+                    📋 Admin Panel - Pending Registrations
+                </h1>
+                <p className="admin-panel-subtitle">
                     Review and approve user registration requests ({pendingUsers.length}/10 pending)
                 </p>
             </div>
 
             {message.text && (
-                <Alert variant={message.type} dismissible onClose={() => setMessage({ type: '', text: '' })}>
+                <Alert 
+                    variant={message.type} 
+                    dismissible 
+                    onClose={() => setMessage({ type: '', text: '' })}
+                    className="alert-rounded"
+                >
                     {message.text}
                 </Alert>
             )}
 
             {loading ? (
-                <div className="text-center py-5">
-                    <div className="spinner-border text-primary" role="status">
-                        <span className="visually-hidden">Loading...</span>
-                    </div>
+                <div className="loading-container">
+                    <div className="spinner-sams"></div>
                 </div>
             ) : pendingUsers.length === 0 ? (
-                <Alert variant="info" className="text-center">
+                <Alert className="alert-sams-info text-center">
                     No pending registration requests at this time.
                 </Alert>
             ) : (
-                <Table striped bordered hover responsive>
-                    <thead className="table-dark">
-                        <tr>
-                            <th>Display Name</th>
-                            <th>Email</th>
-                            <th>Requested At</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {pendingUsers.map(user => (
-                            <tr key={user.id}>
-                                <td className="fw-bold">{user.displayName}</td>
-                                <td>{user.email}</td>
-                                <td>{formatDate(user.requestedAt)}</td>
-                                <td>
-                                    <Badge bg="warning" text="dark">Pending</Badge>
-                                </td>
-                                <td>
-                                    <div className="d-flex gap-2">
-                                        <Button 
-                                            variant="success" 
-                                            size="sm"
-                                            onClick={() => handleApprove(user)}
-                                            disabled={processing === user.id}
-                                        >
-                                            {processing === user.id ? 'Processing...' : 'Approve'}
-                                        </Button>
-                                        <Button 
-                                            variant="danger" 
-                                            size="sm"
-                                            onClick={() => handleReject(user)}
-                                            disabled={processing === user.id}
-                                        >
-                                            Reject
-                                        </Button>
-                                    </div>
-                                </td>
+                <div className="admin-table-container">
+                    <Table striped bordered hover responsive>
+                        <thead className="table-header-blue">
+                            <tr>
+                                <th>Display Name</th>
+                                <th>Email</th>
+                                <th>Requested At</th>
+                                <th>Status</th>
+                                <th>Actions</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </Table>
+                        </thead>
+                        <tbody>
+                            {pendingUsers.map(user => (
+                                <tr key={user.id}>
+                                    <td className="fw-semibold">{user.displayName}</td>
+                                    <td>{user.email}</td>
+                                    <td>{formatDate(user.requestedAt)}</td>
+                                    <td>
+                                        <Badge className="badge-sams-warning">Pending</Badge>
+                                    </td>
+                                    <td>
+                                        <div className="d-flex gap-2">
+                                            <Button 
+                                                variant="success" 
+                                                size="sm"
+                                                onClick={() => handleApprove(user)}
+                                                disabled={processing === user.id}
+                                                className="btn-fw-600"
+                                            >
+                                                {processing === user.id ? 'Processing...' : 'Approve'}
+                                            </Button>
+                                            <Button 
+                                                variant="danger" 
+                                                size="sm"
+                                                onClick={() => handleReject(user)}
+                                                disabled={processing === user.id}
+                                                className="btn-fw-600"
+                                            >
+                                                Reject
+                                            </Button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                </div>
             )}
         </Container>
     );

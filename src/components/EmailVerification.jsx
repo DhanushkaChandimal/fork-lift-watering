@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { sendEmailVerification, signOut } from 'firebase/auth';
 import { auth } from '../lib/firebaseConfig';
-import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
+import '../styles/App.css';
 
 const EmailVerification = ({ user }) => {
     const [sending, setSending] = useState(false);
@@ -36,55 +36,59 @@ const EmailVerification = ({ user }) => {
     };
 
     return (
-        <Container className="d-flex justify-content-center align-items-center vh-100">
-            <div className="card border-0 shadow-lg p-5 text-center" style={{ maxWidth: '500px' }}>
-                <div className="mb-4">
-                    <h2 className="h3 fw-bold mb-3">📧 Verify Your Email</h2>
-                    <p className="text-muted">
-                        We've sent a verification email to:
-                    </p>
-                    <p className="fw-bold">{user?.email}</p>
-                    <p className="text-muted small">
-                        Please check your inbox and click the verification link to activate your account.
-                    </p>
-                </div>
+        <div className="verification-container">
+            <div className="verification-card">
+                <div className="verification-icon">📧</div>
+                <h2 className="verification-title">Verify Your Email</h2>
+                <p className="verification-text-muted">
+                    We've sent a verification email to:
+                </p>
+                <p className="verification-email">
+                    {user?.email}
+                </p>
+                <p className="verification-description">
+                    Please check your inbox and click the verification link to activate your account.
+                </p>
 
                 {message && (
-                    <Alert variant={message.includes('Error') ? 'danger' : 'success'} className="mb-3">
+                    <Alert 
+                        variant={message.includes('Error') ? 'danger' : 'success'} 
+                        className="alert-rounded mb-4"
+                    >
                         {message}
                     </Alert>
                 )}
 
-                <div className="d-grid gap-2">
+                <div className="d-flex flex-column gap-2">
                     <Button 
-                        variant="primary" 
+                        className="btn-sams-primary btn-full-width"
                         onClick={handleCheckVerification}
                     >
                         I've Verified My Email
                     </Button>
                     
                     <Button 
-                        variant="outline-primary" 
+                        variant="outline-primary"
                         onClick={handleResendVerification}
                         disabled={sending}
+                        className="btn-full-width btn-fw-600"
                     >
                         {sending ? 'Sending...' : 'Resend Verification Email'}
                     </Button>
 
                     <Button 
-                        variant="outline-secondary" 
+                        className="btn-sams-secondary btn-full-width mt-2"
                         onClick={handleSignOut}
-                        className="mt-3"
                     >
                         Sign Out
                     </Button>
                 </div>
 
-                <p className="text-muted small mt-4 mb-0">
+                <p className="verification-tip">
                     💡 Tip: Check your spam folder if you don't see the email
                 </p>
             </div>
-        </Container>
+        </div>
     );
 };
 
