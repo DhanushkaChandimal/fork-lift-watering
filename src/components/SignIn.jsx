@@ -2,6 +2,7 @@ import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../lib/firebaseConfig";
 import { pendingUsersService } from "../services/pendingUsersService";
+import "../styles/Auth.css";
 
 const SignIn = ({ onSwitchToRegister }) => {
     const [formData, setFormData] = useState({
@@ -108,80 +109,91 @@ const SignIn = ({ onSwitchToRegister }) => {
     };
 
     return (
-        <div className="d-flex justify-content-center align-items-center vh-100">
-            <div className="card border-0 shadow-lg p-5">
-                <h2 className="h3 fw-bold text-center">Welcome Back</h2>
-                <p className="text-muted text-center">Sign in to your account</p>
+        <div className="auth-container">
+            <div className="auth-left-section">
+                <div className="auth-brand-logo">⚡</div>
+                <h1 className="auth-brand-title">Forklift Battery Management</h1>
+                <p className="auth-brand-description">
+                    Professional battery watering tracking system for warehouse operations. 
+                    Keep your fleet running at peak performance.
+                </p>
+                <div className="auth-illustration">🏭</div>
+            </div>
 
-                <form onSubmit={handleSignIn}>
-                    <div className="mb-3">
-                        <label className="form-label fw-semibold">Email Address</label>
-                        <input
-                            type="email"
-                            value={formData.email}
-                            onChange={(e) => handleInputChange('email', e.target.value)}
-                            className={`form-control ${errors.email ? 'is-invalid' : ''}`}
-                            placeholder="Enter your email address"
-                        />
-                        {errors.email && (
-                            <div className="invalid-feedback">{errors.email}</div>
-                        )}
+            <div className="auth-right-section">
+                <div className="auth-card">
+                    <div className="auth-card-header">
+                        <h2 className="auth-card-title">Welcome Back</h2>
+                        <p className="auth-card-subtitle">Sign in to your account</p>
                     </div>
 
-                    <div className="mb-3">
-                        <label className="form-label fw-semibold">Password</label>
-                        <div className="input-group">
+                    <form onSubmit={handleSignIn}>
+                        <div className="auth-form-group">
+                            <label className="auth-form-label">Email Address</label>
                             <input
-                                type={showPassword ? "text" : "password"}
-                                value={formData.password}
-                                onChange={(e) => handleInputChange('password', e.target.value)}
-                                className={`form-control ${errors.password ? 'is-invalid' : ''}`}
-                                placeholder="Enter your password"
+                                type="email"
+                                value={formData.email}
+                                onChange={(e) => handleInputChange('email', e.target.value)}
+                                className={`auth-form-input ${errors.email ? 'is-invalid' : ''}`}
+                                placeholder="your.email@email.com"
                             />
-                            <button
-                                type="button"
-                                className="btn btn-outline-secondary"
-                                onClick={() => setShowPassword(!showPassword)}
-                            >
-                                {showPassword ? "👀" : "👁️‍🗨️"}
-                            </button>
-                            {errors.password && (
-                                <div className="invalid-feedback d-block">{errors.password}</div>
+                            {errors.email && (
+                                <div className="auth-error-message">{errors.email}</div>
                             )}
                         </div>
-                    </div>
 
-                    {errors.general && (
-                        <div className="alert alert-danger text-center" role="alert">
-                            {errors.general}
+                        <div className="auth-form-group">
+                            <label className="auth-form-label">Password</label>
+                            <div className="auth-input-group">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    value={formData.password}
+                                    onChange={(e) => handleInputChange('password', e.target.value)}
+                                    className={`auth-form-input ${errors.password ? 'is-invalid' : ''}`}
+                                    placeholder="Enter your password"
+                                />
+                                <button
+                                    type="button"
+                                    className="auth-password-toggle"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    {showPassword ? "👁️" : "👁️‍🗨️"}
+                                </button>
+                            </div>
+                            {errors.password && (
+                                <div className="auth-error-message">{errors.password}</div>
+                            )}
                         </div>
-                    )}
 
-                    <button 
-                        type="submit" 
-                        disabled={isLoading}
-                        className={"btn btn-primary btn-lg w-100"}
-                    >
-                        {isLoading ? (
-                            <>
-                                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                Signing In...
-                            </>
-                        ) : (
-                            'Sign In'
+                        {errors.general && (
+                            <div className="auth-alert auth-alert-danger">
+                                {errors.general}
+                            </div>
                         )}
-                    </button>
-                </form>
 
-                <small className="text-muted text-center mt-4">
-                    Don't have an account? <span 
-                        role="button" 
-                        className="text-primary text-decoration-underline"
-                        onClick={onSwitchToRegister}
-                    >
-                        Create one here
-                    </span>
-                </small>
+                        <button 
+                            type="submit" 
+                            disabled={isLoading}
+                            className="auth-submit-btn"
+                        >
+                            {isLoading ? (
+                                <>
+                                    <span className="auth-spinner"></span>
+                                    Signing In...
+                                </>
+                            ) : (
+                                'Sign In'
+                            )}
+                        </button>
+                    </form>
+
+                    <div className="auth-footer">
+                        Don't have an account?{' '}
+                        <span className="auth-link" onClick={onSwitchToRegister}>
+                            Create one here
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
     );
