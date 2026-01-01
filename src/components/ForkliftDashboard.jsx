@@ -6,111 +6,19 @@ import Badge from 'react-bootstrap/Badge';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import '../styles/ForkliftDashboard.css';
-import { useCreateForklift } from "../hooks/useForklift";
+import { useCreateForklift, useForklifts, useUpdateForklift } from "../hooks/useForklift";
 
 const ForkliftDashboard = () => {
-	const [forklifts, setForklifts] = useState(() => {
-		const now = new Date();
-		
-		return [
-			// {
-			// 	id: 1,
-			// 	lastWateringDate: new Date(now - 18 * 24 * 60 * 60 * 1000).toISOString(), // 18 days ago - URGENT
-			// 	lastWateredBy: 'Dhanushka',
-			// 	isOutOfService: false,
-			// 	outOfServiceStartDate: null,
-			// 	outOfServiceEndDate: null,
-			// },
-			// {
-			// 	id: 2,
-			// 	lastWateringDate: new Date(now - 15 * 24 * 60 * 60 * 1000).toISOString(), // 15 days ago - URGENT
-			// 	lastWateredBy: 'Dee',
-			// 	isOutOfService: false,
-			// 	outOfServiceStartDate: null,
-			// 	outOfServiceEndDate: null,
-			// },
-			// {
-			// 	id: 3,
-			// 	lastWateringDate: new Date(now - 12 * 24 * 60 * 60 * 1000).toISOString(), // 12 days ago - WARNING
-			// 	lastWateredBy: 'D',
-			// 	isOutOfService: false,
-			// 	outOfServiceStartDate: null,
-			// 	outOfServiceEndDate: null,
-			// },
-			// {
-			// 	id: 4,
-			// 	lastWateringDate: new Date(now - 10 * 24 * 60 * 60 * 1000).toISOString(), // 10 days ago - WARNING
-			// 	lastWateredBy: 'Chandimal',
-			// 	isOutOfService: false,
-			// 	outOfServiceStartDate: null,
-			// 	outOfServiceEndDate: null,
-			// },
-			// {
-			// 	id: 5,
-			// 	lastWateringDate: new Date(now - 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days ago - GOOD
-			// 	lastWateredBy: 'DC',
-			// 	isOutOfService: false,
-			// 	outOfServiceStartDate: null,
-			// 	outOfServiceEndDate: null,
-			// },
-			// {
-			// 	id: 6,
-			// 	lastWateringDate: new Date(now - 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days ago - GOOD
-			// 	lastWateredBy: 'Scott',
-			// 	isOutOfService: false,
-			// 	outOfServiceStartDate: null,
-			// 	outOfServiceEndDate: null,
-			// },
-			// {
-			// 	id: 7,
-			// 	lastWateringDate: new Date(now - 1 * 24 * 60 * 60 * 1000).toISOString(), // Yesterday - GOOD
-			// 	lastWateredBy: 'John',
-			// 	isOutOfService: false,
-			// 	outOfServiceStartDate: null,
-			// 	outOfServiceEndDate: null,
-			// },
-			// {
-			// 	id: 8,
-			// 	lastWateringDate: now.toISOString(), // Today - GOOD
-			// 	lastWateredBy: 'Paul',
-			// 	isOutOfService: false,
-			// 	outOfServiceStartDate: null,
-			// 	outOfServiceEndDate: null,
-			// },
-			// {
-			// 	id: 9,
-			// 	lastWateringDate: null, // Never watered - URGENT
-			// 	lastWateredBy: null,
-			// 	isOutOfService: false,
-			// 	outOfServiceStartDate: null,
-			// 	outOfServiceEndDate: null,
-			// },
-			// {
-			// 	id: 10,
-			// 	lastWateringDate: new Date(now - 8 * 24 * 60 * 60 * 1000).toISOString(), // 8 days ago before service
-			// 	lastWateredBy: 'User 1',
-			// 	isOutOfService: true, // Currently out of service
-			// 	outOfServiceStartDate: new Date(now - 3 * 24 * 60 * 60 * 1000).toISOString(), // Out since 3 days ago
-			// 	outOfServiceEndDate: null,
-			// },
-			// {
-			// 	id: 11,
-			// 	lastWateringDate: new Date(now - 20 * 24 * 60 * 60 * 1000).toISOString(), // 20 days ago
-			// 	lastWateredBy: 'User 2',
-			// 	isOutOfService: false, // Returned to service
-			// 	outOfServiceStartDate: new Date(now - 15 * 24 * 60 * 60 * 1000).toISOString(), // Was out 15 days ago
-			// 	outOfServiceEndDate: new Date(now - 8 * 24 * 60 * 60 * 1000).toISOString(), // Returned 8 days ago (7 days out = adjusted to 13 days)
-			// },
-        ];
-    });
 	const [selectedForklift, setSelectedForklift] = useState(null);
 	const [showServiceModal, setShowServiceModal] = useState(false);
 	const [showWaterModal, setShowWaterModal] = useState(false);
 	const [showAddForkliftModal, setShowAddForkliftModal] = useState(false);
 	const [userName, setUserName] = useState('');
 	const [newForkliftId, setNewForkliftId] = useState('');
-
+	
+	const { data: forklifts = [], isLoading, error } = useForklifts();
 	const { mutate: createForklift } = useCreateForklift();
+	const { mutate: updateForklift } = useUpdateForklift();
 
 	const getDaysSinceWatering = (forklift) => {
 		if (!forklift.lastWateringDate) return Infinity;
@@ -171,25 +79,26 @@ const ForkliftDashboard = () => {
 	};
 
 	const confirmServiceStatusChange = (action) => {
-		setForklifts(prev => prev.map(f => 
-		f.id === selectedForklift.id 
-			? action === 'out'
+		const updates = action === 'out'
 			? {
-				...f,
 				isOutOfService: true,
 				outOfServiceStartDate: new Date().toISOString(),
 				outOfServiceEndDate: null,
-				}
+			}
 			: {
-				...f,
 				isOutOfService: false,
 				outOfServiceEndDate: new Date().toISOString(),
-				}
-			: f
-		));
+			};
 
-		setShowServiceModal(false);
-		setSelectedForklift(null);
+		updateForklift(
+			{ docId: selectedForklift.docId, updates },
+			{
+				onSuccess: () => {
+					setShowServiceModal(false);
+					setSelectedForklift(null);
+				}
+			}
+		);
 	};
 
 	const handleWaterBattery = (forklift) => {
@@ -203,19 +112,21 @@ const ForkliftDashboard = () => {
 			return;
 		}
 
-		setForklifts(prev => prev.map(f => 
-		f.id === selectedForklift.id 
-			? {
-				...f,
-				lastWateringDate: new Date().toISOString(),
-				lastWateredBy: userName,
-			}
-			: f
-		));
+		const updates = {
+			lastWateringDate: new Date().toISOString(),
+			lastWateredBy: userName,
+		};
 
-		setShowWaterModal(false);
-		setUserName('');
-		setSelectedForklift(null);
+		updateForklift(
+			{ docId: selectedForklift.docId, updates },
+			{
+				onSuccess: () => {
+					setShowWaterModal(false);
+					setUserName('');
+					setSelectedForklift(null);
+				}
+			}
+		);
 	};
 
 	const sortByUrgency = (a, b) => {
@@ -276,203 +187,221 @@ const ForkliftDashboard = () => {
 
 	return (
 		<Container fluid className="py-4">
-			<div className="text-center mb-4">
-				<h1 className="display-4 mb-3">Forklift Battery Watering Dashboard</h1>
-				<p className="lead text-muted">Batteries should be watered at least once every 2 weeks</p>
-			</div>
-
-			<div className="d-flex justify-content-center gap-3 mb-4 flex-wrap">
-				<div className="d-flex align-items-center">
-					<Badge bg="danger" className="me-2">Urgent</Badge>
-					<span>14+ days</span>
-				</div>
-				<div className="d-flex align-items-center">
-					<Badge bg="warning" text="dark" className="me-2">Warning</Badge>
-					<span>10-13 days</span>
-				</div>
-				<div className="d-flex align-items-center">
-					<Badge bg="success" className="me-2">Good</Badge>
-					<span>&lt;10 days</span>
-				</div>
-			</div>
-
-			<div className="mb-4">
-				<div className="d-flex justify-content-between align-items-center mb-3">
-					<h2 className="h3 mb-0">Active Forklifts ({activeForklifts.length})</h2>
-					<Button variant="success" onClick={handleAddForklift}>
-						+ Add Forklift
-					</Button>
-				</div>
-				<Table striped bordered hover responsive size="sm">
-					<thead className="table-dark">
-						<tr>
-							<th>FORKLIFT #</th>
-							<th>STATUS</th>
-							<th className="d-none d-md-table-cell">LAST WATERED</th>
-							<th className="d-none d-md-table-cell">WATERED BY</th>
-							<th>ACTIONS</th>
-						</tr>
-					</thead>
-					<tbody>
-						{activeForklifts.map(forklift => (
-							<tr key={forklift.id} className={getRowVariant(forklift)}>
-								<td className="fw-bold">Forklift #{forklift.id}</td>
-								<td>
-									<Badge bg={getBadgeVariant(forklift)}>{getStatusText(forklift)}</Badge>
-									<div className="d-block d-md-none mobile-watering-info">
-										{formatDate(forklift.lastWateringDate)}<br/>
-										By: {forklift.lastWateredBy || 'N/A'}
-									</div>
-								</td>
-								<td className="d-none d-md-table-cell">{formatDate(forklift.lastWateringDate)}</td>
-								<td className="d-none d-md-table-cell">{forklift.lastWateredBy || 'N/A'}</td>
-								<td>
-									<div className="d-flex flex-column gap-1">
-										<Button 
-											variant="primary"
-											size="sm"
-											className="action-btn"
-											onClick={() => handleWaterBattery(forklift)}
-										>
-											Water
-										</Button>
-										<Button 
-											variant="secondary"
-											size="sm"
-											className="action-btn"
-											onClick={() => handleServiceStatusToggle(forklift)}
-										>
-											Out of Service
-										</Button>
-									</div>
-								</td>
-							</tr>
-						))}
-					</tbody>
-				</Table>
-			</div>
-
-			{outOfServiceForklifts.length > 0 && (
-				<div className="mb-4">
-					<h2 className="h3 mb-3">Out of Service Forklifts ({outOfServiceForklifts.length})</h2>
-					<Table striped bordered hover responsive>
-						<thead className="table-dark">
-							<tr>
-								<th>FORKLIFT #</th>
-								<th>OUT OF SERVICE SINCE</th>
-								<th>ACTIONS</th>
-							</tr>
-						</thead>
-						<tbody>
-							{outOfServiceForklifts.map(forklift => (
-								<tr key={forklift.id}>
-									<td className="fw-bold">Forklift #{forklift.id}</td>
-									<td>{formatDate(forklift.outOfServiceStartDate)}</td>
-									<td>
-										<Button 
-											variant="success"
-											size="sm"
-											onClick={() => handleServiceStatusToggle(forklift)}
-										>
-											Return to Service
-										</Button>
-									</td>
-								</tr>
-							))}
-						</tbody>
-					</Table>
+			{isLoading && (
+				<div className="text-center py-5">
+					<div className="spinner-border text-primary" role="status">
+						<span className="visually-hidden">Loading...</span>
+					</div>
 				</div>
 			)}
 
-			<Modal show={showServiceModal} onHide={() => setShowServiceModal(false)} centered>
-				<Modal.Header closeButton>
-					<Modal.Title>Change Service Status - Forklift #{selectedForklift?.id}</Modal.Title>
-				</Modal.Header>
-				<Modal.Body>
-					<p>
-						{selectedForklift?.isOutOfService 
-						? 'Are you sure you want to return this forklift to service?'
-						: 'Are you sure you want to mark this forklift as out of service?'
-						}
-					</p>
-				</Modal.Body>
-				<Modal.Footer>
-					<Button variant="secondary" onClick={() => setShowServiceModal(false)}>
-						Cancel
-					</Button>
-					<Button 
-						variant="primary" 
-						onClick={() => confirmServiceStatusChange(selectedForklift?.isOutOfService ? 'in' : 'out')}
-					>
-						Confirm
-					</Button>
-				</Modal.Footer>
-			</Modal>
+			{!isLoading && (
+				<>
+					<div className="text-center mb-4">
+						<h1 className="display-4 mb-3">Forklift Battery Watering Dashboard</h1>
+						<p className="lead text-muted">Batteries should be watered at least once every 2 weeks</p>
+					</div>
 
-			<Modal show={showWaterModal} onHide={() => setShowWaterModal(false)} centered>
-				<Modal.Header closeButton>
-					<Modal.Title>Water Battery - Forklift #{selectedForklift?.id}</Modal.Title>
-				</Modal.Header>
-				<Modal.Body>
-					<Form>
-						<Form.Group>
-							<Form.Label>Your Name:</Form.Label>
-							<Form.Control
-								type="text"
-								value={userName}
-								onChange={(e) => setUserName(e.target.value)}
-								placeholder="Enter your name"
-								autoFocus
-							/>
-						</Form.Group>
-					</Form>
-				</Modal.Body>
-				<Modal.Footer>
-					<Button variant="secondary" onClick={() => {
-						setShowWaterModal(false);
-						setUserName('');
-					}}>
-						Cancel
-					</Button>
-					<Button variant="primary" onClick={confirmWaterBattery}>
-						Confirm
-					</Button>
-				</Modal.Footer>
-			</Modal>
+					<div className="d-flex justify-content-center gap-3 mb-4 flex-wrap">
+						<div className="d-flex align-items-center">
+							<Badge bg="danger" className="me-2">Urgent</Badge>
+							<span>14+ days</span>
+						</div>
+						<div className="d-flex align-items-center">
+							<Badge bg="warning" text="dark" className="me-2">Warning</Badge>
+							<span>10-13 days</span>
+						</div>
+						<div className="d-flex align-items-center">
+							<Badge bg="success" className="me-2">Good</Badge>
+							<span>&lt;10 days</span>
+						</div>
+					</div>
 
-			<Modal show={showAddForkliftModal} onHide={() => setShowAddForkliftModal(false)} centered>
-				<Modal.Header closeButton>
-					<Modal.Title>Add New Forklift</Modal.Title>
-				</Modal.Header>
-				<Modal.Body>
-					<Form>
-						<Form.Group>
-							<Form.Label>Forklift Number:</Form.Label>
-							<Form.Control
-								type="number"
-								value={newForkliftId}
-								onChange={(e) => setNewForkliftId(e.target.value)}
-								placeholder="Enter forklift number"
-								autoFocus
-							/>
-							<Form.Text className="text-muted">
-								Enter a unique number for the new forklift
-							</Form.Text>
-						</Form.Group>
-					</Form>
-				</Modal.Body>
-				<Modal.Footer>
-					<Button variant="secondary" onClick={() => {
-						setShowAddForkliftModal(false);
-						setNewForkliftId('');
-					}}>
-						Cancel
-					</Button>
-					<Button variant="success" onClick={confirmAddForklift}>
-						Add Forklift
-					</Button>
-				</Modal.Footer>
-			</Modal>
+					<div className="mb-4">
+						<div className="d-flex justify-content-between align-items-center mb-3">
+							<h2 className="h3 mb-0">Active Forklifts ({activeForklifts.length})</h2>
+							<Button variant="success" onClick={handleAddForklift}>
+								+ Add Forklift
+							</Button>
+						</div>
+						<Table striped bordered hover responsive size="sm">
+							<thead className="table-dark">
+								<tr>
+									<th>FORKLIFT #</th>
+									<th>STATUS</th>
+									<th className="d-none d-md-table-cell">LAST WATERED</th>
+									<th className="d-none d-md-table-cell">WATERED BY</th>
+									<th>ACTIONS</th>
+								</tr>
+							</thead>
+							<tbody>
+								{activeForklifts.map(forklift => (
+									<tr key={forklift.id} className={getRowVariant(forklift)}>
+										<td className="fw-bold">Forklift #{forklift.id}</td>
+										<td>
+											<Badge bg={getBadgeVariant(forklift)}>{getStatusText(forklift)}</Badge>
+											<div className="d-block d-md-none mobile-watering-info">
+												{formatDate(forklift.lastWateringDate)}<br/>
+												By: {forklift.lastWateredBy || 'N/A'}
+											</div>
+										</td>
+										<td className="d-none d-md-table-cell">{formatDate(forklift.lastWateringDate)}</td>
+										<td className="d-none d-md-table-cell">{forklift.lastWateredBy || 'N/A'}</td>
+										<td>
+											<div className="d-flex flex-column gap-1">
+												<Button 
+													variant="primary"
+													size="sm"
+													className="action-btn"
+													onClick={() => handleWaterBattery(forklift)}
+												>
+													Water
+												</Button>
+												<Button 
+													variant="secondary"
+													size="sm"
+													className="action-btn"
+													onClick={() => handleServiceStatusToggle(forklift)}
+												>
+													Out of Service
+												</Button>
+											</div>
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</Table>
+					</div>
+
+					{error && (
+						<div className="alert alert-danger" role="alert">
+							Error loading forklifts: {error.message}
+						</div>
+					)}
+
+					{outOfServiceForklifts.length > 0 && (
+						<div className="mb-4">
+							<h2 className="h3 mb-3">Out of Service Forklifts ({outOfServiceForklifts.length})</h2>
+							<Table striped bordered hover responsive>
+								<thead className="table-dark">
+									<tr>
+										<th>FORKLIFT #</th>
+										<th>OUT OF SERVICE SINCE</th>
+										<th>ACTIONS</th>
+									</tr>
+								</thead>
+								<tbody>
+									{outOfServiceForklifts.map(forklift => (
+										<tr key={forklift.id}>
+											<td className="fw-bold">Forklift #{forklift.id}</td>
+											<td>{formatDate(forklift.outOfServiceStartDate)}</td>
+											<td>
+												<Button 
+													variant="success"
+													size="sm"
+													onClick={() => handleServiceStatusToggle(forklift)}
+												>
+													Return to Service
+												</Button>
+											</td>
+										</tr>
+									))}
+								</tbody>
+							</Table>
+						</div>
+					)}
+
+					<Modal show={showServiceModal} onHide={() => setShowServiceModal(false)} centered>
+						<Modal.Header closeButton>
+							<Modal.Title>Change Service Status - Forklift #{selectedForklift?.id}</Modal.Title>
+						</Modal.Header>
+						<Modal.Body>
+							<p>
+								{selectedForklift?.isOutOfService 
+								? 'Are you sure you want to return this forklift to service?'
+								: 'Are you sure you want to mark this forklift as out of service?'
+								}
+							</p>
+						</Modal.Body>
+						<Modal.Footer>
+							<Button variant="secondary" onClick={() => setShowServiceModal(false)}>
+								Cancel
+							</Button>
+							<Button 
+								variant="primary" 
+								onClick={() => confirmServiceStatusChange(selectedForklift?.isOutOfService ? 'in' : 'out')}
+							>
+								Confirm
+							</Button>
+						</Modal.Footer>
+					</Modal>
+
+					<Modal show={showWaterModal} onHide={() => setShowWaterModal(false)} centered>
+						<Modal.Header closeButton>
+							<Modal.Title>Water Battery - Forklift #{selectedForklift?.id}</Modal.Title>
+						</Modal.Header>
+						<Modal.Body>
+							<Form>
+								<Form.Group>
+									<Form.Label>Your Name:</Form.Label>
+									<Form.Control
+										type="text"
+										value={userName}
+										onChange={(e) => setUserName(e.target.value)}
+										placeholder="Enter your name"
+										autoFocus
+									/>
+								</Form.Group>
+							</Form>
+						</Modal.Body>
+						<Modal.Footer>
+							<Button variant="secondary" onClick={() => {
+								setShowWaterModal(false);
+								setUserName('');
+							}}>
+								Cancel
+							</Button>
+							<Button variant="primary" onClick={confirmWaterBattery}>
+								Confirm
+							</Button>
+						</Modal.Footer>
+					</Modal>
+
+					<Modal show={showAddForkliftModal} onHide={() => setShowAddForkliftModal(false)} centered>
+						<Modal.Header closeButton>
+							<Modal.Title>Add New Forklift</Modal.Title>
+						</Modal.Header>
+						<Modal.Body>
+							<Form>
+								<Form.Group>
+									<Form.Label>Forklift Number:</Form.Label>
+									<Form.Control
+										type="number"
+										value={newForkliftId}
+										onChange={(e) => setNewForkliftId(e.target.value)}
+										placeholder="Enter forklift number"
+										autoFocus
+									/>
+									<Form.Text className="text-muted">
+										Enter a unique number for the new forklift
+									</Form.Text>
+								</Form.Group>
+							</Form>
+						</Modal.Body>
+						<Modal.Footer>
+							<Button variant="secondary" onClick={() => {
+								setShowAddForkliftModal(false);
+								setNewForkliftId('');
+							}}>
+								Cancel
+							</Button>
+							<Button variant="success" onClick={confirmAddForklift}>
+								Add Forklift
+							</Button>
+						</Modal.Footer>
+					</Modal>
+				</>
+			)}
 		</Container>
 	);
 };
