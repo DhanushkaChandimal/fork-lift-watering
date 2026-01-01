@@ -298,8 +298,8 @@ const ForkliftDashboard = () => {
 						<tr>
 							<th>FORKLIFT #</th>
 							<th>STATUS</th>
-							<th>LAST WATERED</th>
-							<th>WATERED BY</th>
+							<th className="d-none d-md-table-cell">LAST WATERED</th>
+							<th className="d-none d-md-table-cell">WATERED BY</th>
 							<th>ACTIONS</th>
 						</tr>
 					</thead>
@@ -309,9 +309,13 @@ const ForkliftDashboard = () => {
 								<td className="fw-bold">Forklift #{forklift.id}</td>
 								<td>
 									<Badge bg={getBadgeVariant(forklift)}>{getStatusText(forklift)}</Badge>
+									<div className="d-block d-md-none mobile-watering-info">
+										{formatDate(forklift.lastWateringDate)}<br/>
+										By: {forklift.lastWateredBy || 'N/A'}
+									</div>
 								</td>
-								<td>{formatDate(forklift.lastWateringDate)}</td>
-								<td>{forklift.lastWateredBy || 'N/A'}</td>
+								<td className="d-none d-md-table-cell">{formatDate(forklift.lastWateringDate)}</td>
+								<td className="d-none d-md-table-cell">{forklift.lastWateredBy || 'N/A'}</td>
 								<td>
 									<div className="d-flex flex-column gap-1">
 										<Button 

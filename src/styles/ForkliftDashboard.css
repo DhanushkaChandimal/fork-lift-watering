@@ -4,3 +4,10 @@
     padding: 0.25rem 0.5rem;
     white-space: nowrap;
 }
+
+/* Mobile combined info display */
+.mobile-watering-info {
+    font-size: 0.7rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
