@@ -1,8 +1,11 @@
+import { Route, Routes } from "react-router-dom"
 import ForkliftDashboard from "./components/ForkliftDashboard"
 
 function App() {
   return (
-    <ForkliftDashboard/>
+    <Routes>
+      <Route path='/' element={<ForkliftDashboard/>}/>
+    </Routes>
   )
 }
 

@@ -6,100 +6,101 @@ import Badge from 'react-bootstrap/Badge';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import '../styles/ForkliftDashboard.css';
+import { useCreateForklift } from "../hooks/useForklift";
 
 const ForkliftDashboard = () => {
 	const [forklifts, setForklifts] = useState(() => {
 		const now = new Date();
 		
 		return [
-			{
-				id: 1,
-				lastWateringDate: new Date(now - 18 * 24 * 60 * 60 * 1000).toISOString(), // 18 days ago - URGENT
-				lastWateredBy: 'Dhanushka',
-				isOutOfService: false,
-				outOfServiceStartDate: null,
-				outOfServiceEndDate: null,
-			},
-			{
-				id: 2,
-				lastWateringDate: new Date(now - 15 * 24 * 60 * 60 * 1000).toISOString(), // 15 days ago - URGENT
-				lastWateredBy: 'Dee',
-				isOutOfService: false,
-				outOfServiceStartDate: null,
-				outOfServiceEndDate: null,
-			},
-			{
-				id: 3,
-				lastWateringDate: new Date(now - 12 * 24 * 60 * 60 * 1000).toISOString(), // 12 days ago - WARNING
-				lastWateredBy: 'D',
-				isOutOfService: false,
-				outOfServiceStartDate: null,
-				outOfServiceEndDate: null,
-			},
-			{
-				id: 4,
-				lastWateringDate: new Date(now - 10 * 24 * 60 * 60 * 1000).toISOString(), // 10 days ago - WARNING
-				lastWateredBy: 'Chandimal',
-				isOutOfService: false,
-				outOfServiceStartDate: null,
-				outOfServiceEndDate: null,
-			},
-			{
-				id: 5,
-				lastWateringDate: new Date(now - 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days ago - GOOD
-				lastWateredBy: 'DC',
-				isOutOfService: false,
-				outOfServiceStartDate: null,
-				outOfServiceEndDate: null,
-			},
-			{
-				id: 6,
-				lastWateringDate: new Date(now - 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days ago - GOOD
-				lastWateredBy: 'Scott',
-				isOutOfService: false,
-				outOfServiceStartDate: null,
-				outOfServiceEndDate: null,
-			},
-			{
-				id: 7,
-				lastWateringDate: new Date(now - 1 * 24 * 60 * 60 * 1000).toISOString(), // Yesterday - GOOD
-				lastWateredBy: 'John',
-				isOutOfService: false,
-				outOfServiceStartDate: null,
-				outOfServiceEndDate: null,
-			},
-			{
-				id: 8,
-				lastWateringDate: now.toISOString(), // Today - GOOD
-				lastWateredBy: 'Paul',
-				isOutOfService: false,
-				outOfServiceStartDate: null,
-				outOfServiceEndDate: null,
-			},
-			{
-				id: 9,
-				lastWateringDate: null, // Never watered - URGENT
-				lastWateredBy: null,
-				isOutOfService: false,
-				outOfServiceStartDate: null,
-				outOfServiceEndDate: null,
-			},
-			{
-				id: 10,
-				lastWateringDate: new Date(now - 8 * 24 * 60 * 60 * 1000).toISOString(), // 8 days ago before service
-				lastWateredBy: 'User 1',
-				isOutOfService: true, // Currently out of service
-				outOfServiceStartDate: new Date(now - 3 * 24 * 60 * 60 * 1000).toISOString(), // Out since 3 days ago
-				outOfServiceEndDate: null,
-			},
-			{
-				id: 11,
-				lastWateringDate: new Date(now - 20 * 24 * 60 * 60 * 1000).toISOString(), // 20 days ago
-				lastWateredBy: 'User 2',
-				isOutOfService: false, // Returned to service
-				outOfServiceStartDate: new Date(now - 15 * 24 * 60 * 60 * 1000).toISOString(), // Was out 15 days ago
-				outOfServiceEndDate: new Date(now - 8 * 24 * 60 * 60 * 1000).toISOString(), // Returned 8 days ago (7 days out = adjusted to 13 days)
-			},
+			// {
+			// 	id: 1,
+			// 	lastWateringDate: new Date(now - 18 * 24 * 60 * 60 * 1000).toISOString(), // 18 days ago - URGENT
+			// 	lastWateredBy: 'Dhanushka',
+			// 	isOutOfService: false,
+			// 	outOfServiceStartDate: null,
+			// 	outOfServiceEndDate: null,
+			// },
+			// {
+			// 	id: 2,
+			// 	lastWateringDate: new Date(now - 15 * 24 * 60 * 60 * 1000).toISOString(), // 15 days ago - URGENT
+			// 	lastWateredBy: 'Dee',
+			// 	isOutOfService: false,
+			// 	outOfServiceStartDate: null,
+			// 	outOfServiceEndDate: null,
+			// },
+			// {
+			// 	id: 3,
+			// 	lastWateringDate: new Date(now - 12 * 24 * 60 * 60 * 1000).toISOString(), // 12 days ago - WARNING
+			// 	lastWateredBy: 'D',
+			// 	isOutOfService: false,
+			// 	outOfServiceStartDate: null,
+			// 	outOfServiceEndDate: null,
+			// },
+			// {
+			// 	id: 4,
+			// 	lastWateringDate: new Date(now - 10 * 24 * 60 * 60 * 1000).toISOString(), // 10 days ago - WARNING
+			// 	lastWateredBy: 'Chandimal',
+			// 	isOutOfService: false,
+			// 	outOfServiceStartDate: null,
+			// 	outOfServiceEndDate: null,
+			// },
+			// {
+			// 	id: 5,
+			// 	lastWateringDate: new Date(now - 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days ago - GOOD
+			// 	lastWateredBy: 'DC',
+			// 	isOutOfService: false,
+			// 	outOfServiceStartDate: null,
+			// 	outOfServiceEndDate: null,
+			// },
+			// {
+			// 	id: 6,
+			// 	lastWateringDate: new Date(now - 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days ago - GOOD
+			// 	lastWateredBy: 'Scott',
+			// 	isOutOfService: false,
+			// 	outOfServiceStartDate: null,
+			// 	outOfServiceEndDate: null,
+			// },
+			// {
+			// 	id: 7,
+			// 	lastWateringDate: new Date(now - 1 * 24 * 60 * 60 * 1000).toISOString(), // Yesterday - GOOD
+			// 	lastWateredBy: 'John',
+			// 	isOutOfService: false,
+			// 	outOfServiceStartDate: null,
+			// 	outOfServiceEndDate: null,
+			// },
+			// {
+			// 	id: 8,
+			// 	lastWateringDate: now.toISOString(), // Today - GOOD
+			// 	lastWateredBy: 'Paul',
+			// 	isOutOfService: false,
+			// 	outOfServiceStartDate: null,
+			// 	outOfServiceEndDate: null,
+			// },
+			// {
+			// 	id: 9,
+			// 	lastWateringDate: null, // Never watered - URGENT
+			// 	lastWateredBy: null,
+			// 	isOutOfService: false,
+			// 	outOfServiceStartDate: null,
+			// 	outOfServiceEndDate: null,
+			// },
+			// {
+			// 	id: 10,
+			// 	lastWateringDate: new Date(now - 8 * 24 * 60 * 60 * 1000).toISOString(), // 8 days ago before service
+			// 	lastWateredBy: 'User 1',
+			// 	isOutOfService: true, // Currently out of service
+			// 	outOfServiceStartDate: new Date(now - 3 * 24 * 60 * 60 * 1000).toISOString(), // Out since 3 days ago
+			// 	outOfServiceEndDate: null,
+			// },
+			// {
+			// 	id: 11,
+			// 	lastWateringDate: new Date(now - 20 * 24 * 60 * 60 * 1000).toISOString(), // 20 days ago
+			// 	lastWateredBy: 'User 2',
+			// 	isOutOfService: false, // Returned to service
+			// 	outOfServiceStartDate: new Date(now - 15 * 24 * 60 * 60 * 1000).toISOString(), // Was out 15 days ago
+			// 	outOfServiceEndDate: new Date(now - 8 * 24 * 60 * 60 * 1000).toISOString(), // Returned 8 days ago (7 days out = adjusted to 13 days)
+			// },
         ];
     });
 	const [selectedForklift, setSelectedForklift] = useState(null);
@@ -108,6 +109,8 @@ const ForkliftDashboard = () => {
 	const [showAddForkliftModal, setShowAddForkliftModal] = useState(false);
 	const [userName, setUserName] = useState('');
 	const [newForkliftId, setNewForkliftId] = useState('');
+
+	const { mutate: createForklift } = useCreateForklift();
 
 	const getDaysSinceWatering = (forklift) => {
 		if (!forklift.lastWateringDate) return Infinity;
@@ -259,9 +262,16 @@ const ForkliftDashboard = () => {
 			outOfServiceEndDate: null,
 		};
 
-		setForklifts(prev => [...prev, newForklift]);
-		setShowAddForkliftModal(false);
-		setNewForkliftId('');
+		console.log("11111111111111")
+
+		createForklift(newForklift, {
+			onSuccess: () => {
+				console.log("22222222222222")
+				alert('Forklift created successfully!');
+				setShowAddForkliftModal(false);
+				setNewForkliftId('');
+			}
+		});
 	};
 
 	return (
