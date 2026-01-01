@@ -39,4 +39,23 @@ export const forkliftService = {
         
         return { docId, ...updates };
     },
+
+    updateAllWateredByRecords: async (oldName, newName) => {
+        const querySnapshot = await getDocs(collection(db, FORKLIFTS_COLLECTION));
+        const updatePromises = [];
+        let updatedCount = 0;
+
+        querySnapshot.docs.forEach(doc => {
+            const data = doc.data();
+            if (data.lastWateredBy === oldName) {
+                updatePromises.push(
+                    updateDoc(doc.ref, { lastWateredBy: newName })
+                );
+                updatedCount++;
+            }
+        });
+
+        await Promise.all(updatePromises);
+        return updatedCount;
+    },
 };

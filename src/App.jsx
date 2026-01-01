@@ -7,6 +7,7 @@ import ForkliftDashboard from "./components/ForkliftDashboard";
 import SignIn from "./components/SignIn";
 import Register from "./components/Register";
 import ForgotPassword from "./components/ForgotPassword";
+import ProfileSettings from "./components/ProfileSettings";
 import NavigationBar from "./components/Navbar";
 import EmailVerification from "./components/EmailVerification";
 import AdminPanel from "./components/AdminPanel";
@@ -81,6 +82,10 @@ function App() {
               <Navigate to="/" replace />
             )
           }
+        />
+        <Route 
+          path='/profile' 
+          element={user ? <ProfileSettings user={user} /> : <Navigate to="/auth" replace />}
         />
         <Route 
           path='/' 

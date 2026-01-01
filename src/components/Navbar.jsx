@@ -38,6 +38,9 @@ const NavigationBar = ({ user }) => {
                                         📋 Admin Panel
                                     </Nav.Link>
                                 )}
+                                <Nav.Link href="/profile" className="nav-link-sams">
+                                    👤 Profile
+                                </Nav.Link>
                                 <Nav.Item className="text-light me-3">
                                     Welcome, <strong>{user.displayName || user.email}</strong>
                                 </Nav.Item>
