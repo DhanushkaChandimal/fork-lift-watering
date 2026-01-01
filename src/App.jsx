@@ -6,6 +6,7 @@ import ForkliftDashboard from "./components/ForkliftDashboard";
 import SignIn from "./components/SignIn";
 import Register from "./components/Register";
 import NavigationBar from "./components/Navbar";
+import EmailVerification from "./components/EmailVerification";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -29,6 +30,11 @@ function App() {
         </div>
       </div>
     );
+  }
+
+  // If user is logged in but email is not verified, show verification page
+  if (user && !user.emailVerified) {
+    return <EmailVerification user={user} />;
   }
 
   return (

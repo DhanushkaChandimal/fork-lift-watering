@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from "firebase/auth";
 import { auth } from "../lib/firebaseConfig";
 
 const Register = ({ onSwitchToSignIn }) => {
@@ -72,13 +72,16 @@ const Register = ({ onSwitchToSignIn }) => {
                 displayName: formData.displayName.trim()
             });
 
+            // Send email verification
+            await sendEmailVerification(userCredential.user);
+
             setFormData({
                 displayName: "",
                 email: "",
                 password: "",
                 confirmPassword: ""
             });
-            alert("Registration successful!");
+            alert("Registration successful! Please check your email to verify your account before signing in.");
         } catch (err) {
             const errorMessage = err?.message || 'An unknown error occurred';
             setErrors({general: errorMessage});
