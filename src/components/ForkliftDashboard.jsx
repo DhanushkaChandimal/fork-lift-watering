@@ -16,6 +16,7 @@ const ForkliftDashboard = ({ user }) => {
 	const [showAddForkliftModal, setShowAddForkliftModal] = useState(false);
 	const [newForkliftId, setNewForkliftId] = useState('');
 	const [generatedForkliftId, setGeneratedForkliftId] = useState(null);
+	const [wateringDate, setWateringDate] = useState(new Date().toISOString().split('T')[0]);
 	
 	const { data: forklifts = [], isLoading, error } = useForklifts();
 	const { mutate: createForklift } = useCreateForklift();
@@ -104,14 +105,18 @@ const ForkliftDashboard = ({ user }) => {
 
 	const handleWaterBattery = (forklift) => {
 		setSelectedForklift(forklift);
+		setWateringDate(new Date().toISOString().split('T')[0]);
 		setShowWaterModal(true);
 	};
 
 	const confirmWaterBattery = () => {
 		const loggedInUserName = user?.displayName || user?.email || 'Unknown User';
 
+		// Convert selected date to ISO string with current time
+		const selectedDate = new Date(wateringDate + 'T' + new Date().toTimeString().split(' ')[0]);
+
 		const updates = {
-			lastWateringDate: new Date().toISOString(),
+			lastWateringDate: selectedDate.toISOString(),
 			lastWateredBy: loggedInUserName,
 		};
 
@@ -367,7 +372,19 @@ const ForkliftDashboard = ({ user }) => {
 							<Modal.Title>Water Battery - Forklift #{selectedForklift?.id}</Modal.Title>
 						</Modal.Header>
 						<Modal.Body>
-							<p>Confirm that you have watered the battery for Forklift #{selectedForklift?.id}.</p>
+							<p>Confirm that you have watered the battery for Forklift #{selectedForklift?.id}.</p>						
+						<Form.Group className="mb-3">
+							<Form.Label><strong>Watering Date</strong></Form.Label>
+							<Form.Control
+								type="date"
+								value={wateringDate}
+								onChange={(e) => setWateringDate(e.target.value)}
+								max={new Date().toISOString().split('T')[0]}
+							/>
+							<Form.Text className="text-muted">
+								You can only select today or past dates
+							</Form.Text>
+						</Form.Group>
 							<p className="text-muted">
 								<small>This will be recorded as watered by: <strong>{user?.displayName || user?.email}</strong></small>
 							</p>
