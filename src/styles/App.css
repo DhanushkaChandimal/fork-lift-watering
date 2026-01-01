@@ -156,20 +156,22 @@ body {
 
 /* Badge Styles */
 .badge-sams-danger {
-    background-color: var(--sams-danger);
+    background-color: var(--sams-danger) !important;
+    color: white !important;
     font-weight: 600;
     padding: 0.5rem 0.75rem;
 }
 
 .badge-sams-warning {
-    background-color: var(--sams-warning);
-    color: #000;
+    background-color: var(--sams-warning) !important;
+    color: #000 !important;
     font-weight: 600;
     padding: 0.5rem 0.75rem;
 }
 
 .badge-sams-success {
-    background-color: var(--sams-success);
+    background-color: var(--sams-success) !important;
+    color: white !important;
     font-weight: 600;
     padding: 0.5rem 0.75rem;
 }
