@@ -13,7 +13,6 @@ const ForkliftDashboard = ({ user }) => {
 	const [showServiceModal, setShowServiceModal] = useState(false);
 	const [showWaterModal, setShowWaterModal] = useState(false);
 	const [showAddForkliftModal, setShowAddForkliftModal] = useState(false);
-	const [userName, setUserName] = useState('');
 	const [newForkliftId, setNewForkliftId] = useState('');
 	const [generatedForkliftId, setGeneratedForkliftId] = useState(null);
 	
@@ -108,14 +107,11 @@ const ForkliftDashboard = ({ user }) => {
 	};
 
 	const confirmWaterBattery = () => {
-		if (!userName.trim()) {
-			alert('Please enter your name');
-			return;
-		}
+		const loggedInUserName = user?.displayName || user?.email || 'Unknown User';
 
 		const updates = {
 			lastWateringDate: new Date().toISOString(),
-			lastWateredBy: userName,
+			lastWateredBy: loggedInUserName,
 		};
 
 		updateForklift(
@@ -123,7 +119,6 @@ const ForkliftDashboard = ({ user }) => {
 			{
 				onSuccess: () => {
 					setShowWaterModal(false);
-					setUserName('');
 					setSelectedForklift(null);
 				}
 			}
@@ -366,23 +361,15 @@ const ForkliftDashboard = ({ user }) => {
 							<Modal.Title>Water Battery - Forklift #{selectedForklift?.id}</Modal.Title>
 						</Modal.Header>
 						<Modal.Body>
-							<Form>
-								<Form.Group>
-									<Form.Label>Your Name:</Form.Label>
-									<Form.Control
-										type="text"
-										value={userName}
-										onChange={(e) => setUserName(e.target.value)}
-										placeholder="Enter your name"
-										autoFocus
-									/>
-								</Form.Group>
-							</Form>
+							<p>Confirm that you have watered the battery for Forklift #{selectedForklift?.id}.</p>
+							<p className="text-muted">
+								<small>This will be recorded as watered by: <strong>{user?.displayName || user?.email}</strong></small>
+							</p>
 						</Modal.Body>
 						<Modal.Footer>
 							<Button variant="secondary" onClick={() => {
 								setShowWaterModal(false);
-								setUserName('');
+								setSelectedForklift(null);
 							}}>
 								Cancel
 							</Button>
