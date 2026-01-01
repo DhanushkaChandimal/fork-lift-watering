@@ -224,6 +224,13 @@
     to { transform: rotate(360deg); }
 }
 
+.auth-forgot-password {
+    text-align: right;
+    margin-top: -0.5rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+}
+
 .auth-footer {
     text-align: center;
     margin-top: 1.5rem;

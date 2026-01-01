@@ -6,6 +6,7 @@ import { isAdmin } from './lib/adminConfig';
 import ForkliftDashboard from "./components/ForkliftDashboard";
 import SignIn from "./components/SignIn";
 import Register from "./components/Register";
+import ForgotPassword from "./components/ForgotPassword";
 import NavigationBar from "./components/Navbar";
 import EmailVerification from "./components/EmailVerification";
 import AdminPanel from "./components/AdminPanel";
@@ -15,6 +16,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showRegister, setShowRegister] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -49,10 +51,24 @@ function App() {
           element={
             user ? (
               <Navigate to="/" replace />
+            ) : showForgotPassword ? (
+              <ForgotPassword onBackToSignIn={() => setShowForgotPassword(false)} />
             ) : showRegister ? (
-              <Register onSwitchToSignIn={() => setShowRegister(false)} />
+              <Register onSwitchToSignIn={() => {
+                setShowRegister(false);
+                setShowForgotPassword(false);
+              }} />
             ) : (
-              <SignIn onSwitchToRegister={() => setShowRegister(true)} />
+              <SignIn 
+                onSwitchToRegister={() => {
+                  setShowRegister(true);
+                  setShowForgotPassword(false);
+                }} 
+                onSwitchToForgotPassword={() => {
+                  setShowForgotPassword(true);
+                  setShowRegister(false);
+                }}
+              />
             )
           }
         />

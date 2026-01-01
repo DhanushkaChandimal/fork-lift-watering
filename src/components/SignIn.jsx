@@ -4,7 +4,7 @@ import { auth } from "../lib/firebaseConfig";
 import { pendingUsersService } from "../services/pendingUsersService";
 import "../styles/Auth.css";
 
-const SignIn = ({ onSwitchToRegister }) => {
+const SignIn = ({ onSwitchToRegister, onSwitchToForgotPassword }) => {
     const [formData, setFormData] = useState({
         email: "",
         password: ""
@@ -163,6 +163,12 @@ const SignIn = ({ onSwitchToRegister }) => {
                             {errors.password && (
                                 <div className="auth-error-message">{errors.password}</div>
                             )}
+                        </div>
+
+                        <div className="auth-forgot-password">
+                            <span className="auth-link" onClick={onSwitchToForgotPassword}>
+                                Forgot Password?
+                            </span>
                         </div>
 
                         {errors.general && (
