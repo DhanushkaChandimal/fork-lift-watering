@@ -71,21 +71,28 @@ const ForkliftDashboard = ({ user }) => {
 				outOfServiceEndDate: null,
 			};
 		} else {
-			// Returning to service
+			// Returning to service - clear out-of-service dates and adjust watering date
 			updates = {
 				isOutOfService: false,
-				outOfServiceEndDate: selectedDate.toISOString(),
+				outOfServiceStartDate: null,
+				outOfServiceEndDate: null,
 			};
 			
-			// If last watering was during out-of-service period, update it to return date
 			if (selectedForklift.lastWateringDate && selectedForklift.outOfServiceStartDate) {
 				const lastWatering = new Date(selectedForklift.lastWateringDate);
 				const outStart = new Date(selectedForklift.outOfServiceStartDate);
 				
-				// Check if watering happened during out-of-service period
+				// If watered during out-of-service period, set to return date
 				if (lastWatering >= outStart && lastWatering <= selectedDate) {
 					updates.lastWateringDate = selectedDate.toISOString();
 				}
+				// If watered before going out of service, add the out-of-service period
+				else if (lastWatering < outStart) {
+					const outOfServiceDays = Math.floor((selectedDate - outStart) / (1000 * 60 * 60 * 24));
+					const adjustedDate = new Date(lastWatering.getTime() + (outOfServiceDays * 24 * 60 * 60 * 1000));
+					updates.lastWateringDate = adjustedDate.toISOString();
+				}
+				// If watered after going out (shouldn't happen), keep original date
 			}
 		}
 

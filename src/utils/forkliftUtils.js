@@ -6,32 +6,18 @@ export const getDaysSinceWatering = (forklift) => {
 	const lastWatering = new Date(forklift.lastWateringDate);
 	const today = new Date();
 	
-	let effectiveLastWatering = lastWatering;
-	
-	// Scenario 1: Forklift is currently out of service
-	// Calculate days from last watering to when it went out of service (frozen in time)
+	// If forklift is currently out of service, time is frozen
+	// Calculate days from last watering to when it went out of service
 	if (forklift.isOutOfService && forklift.outOfServiceStartDate) {
 		const outStart = new Date(forklift.outOfServiceStartDate);
-		const diffTime = Math.abs(outStart - effectiveLastWatering);
+		const diffTime = Math.abs(outStart - lastWatering);
 		const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 		return diffDays;
 	}
 	
-	// Scenario 2: Forklift was out of service and returned
-	if (forklift.outOfServiceStartDate && forklift.outOfServiceEndDate) {
-		const outStart = new Date(forklift.outOfServiceStartDate);
-		const outEnd = new Date(forklift.outOfServiceEndDate);
-		
-		// If watered BEFORE going out of service, add the out-of-service period
-		if (lastWatering < outStart) {
-			const outOfServiceDays = Math.floor((outEnd - outStart) / (1000 * 60 * 60 * 24));
-			effectiveLastWatering = new Date(lastWatering.getTime() + (outOfServiceDays * 24 * 60 * 60 * 1000));
-		}
-		// If watered during or after service period, use actual date (handled by database update)
-	}
-
-	// Scenario 3: Normal calculation for active forklifts
-	const diffTime = Math.abs(today - effectiveLastWatering);
+	// For active forklifts (or returned), calculate normally
+	// Out-of-service dates are cleared on return, and lastWateringDate is already adjusted
+	const diffTime = Math.abs(today - lastWatering);
 	const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 	return diffDays;
 };
