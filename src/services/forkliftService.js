@@ -15,6 +15,14 @@ export const forkliftService = {
     },
 
     createForklift: async (forkliftData) => {
+        const existingForklift = await getDocs(
+            query(collection(db, FORKLIFTS_COLLECTION), where('id', '==', forkliftData.id))
+        );
+        
+        if (!existingForklift.empty) {
+            throw new Error(`Forklift #${forkliftData.id} already exists`);
+        }
+        
         await addDoc(collection(db, FORKLIFTS_COLLECTION), forkliftData);
         return forkliftData;
     },

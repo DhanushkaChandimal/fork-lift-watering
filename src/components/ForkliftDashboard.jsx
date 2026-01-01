@@ -184,6 +184,13 @@ const ForkliftDashboard = () => {
 				setShowAddForkliftModal(false);
 				setNewForkliftId('');
 				setGeneratedForkliftId(null);
+			},
+			onError: (error) => {
+				alert(`Failed to add forklift: ${error.message}`);
+				setShowAddForkliftModal(false);
+				setNewForkliftId('');
+				setGeneratedForkliftId(null);
+				window.location.reload();
 			}
 		});
 	};
