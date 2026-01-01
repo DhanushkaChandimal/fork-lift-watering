@@ -55,7 +55,40 @@ const SignIn = ({ onSwitchToRegister }) => {
             });
 
         } catch (err) {
-            const errorMessage = err?.message || 'An unknown error occurred';
+            let errorMessage = 'An unknown error occurred';
+            
+            // Handle Firebase auth errors with user-friendly messages
+            if (err.code) {
+                switch (err.code) {
+                    case 'auth/invalid-email':
+                        errorMessage = 'Invalid email address format.';
+                        break;
+                    case 'auth/user-disabled':
+                        errorMessage = 'This account has been disabled. Please contact an administrator.';
+                        break;
+                    case 'auth/user-not-found':
+                        errorMessage = 'No account found with this email. Please check your email or register for a new account.';
+                        break;
+                    case 'auth/wrong-password':
+                        errorMessage = 'Incorrect password. Please try again.';
+                        break;
+                    case 'auth/invalid-credential':
+                        errorMessage = 'Invalid email or password. Please check your credentials and try again.';
+                        break;
+                    case 'auth/too-many-requests':
+                        errorMessage = 'Too many failed login attempts. Please try again later or reset your password.';
+                        break;
+                    case 'auth/network-request-failed':
+                        errorMessage = 'Network error. Please check your internet connection and try again.';
+                        break;
+                    case 'auth/email-not-verified':
+                        errorMessage = 'Please verify your email address before signing in. Check your inbox for the verification email.';
+                        break;
+                    default:
+                        errorMessage = err.message || 'Failed to sign in. Please try again.';
+                }
+            }
+            
             setErrors({general: errorMessage});
         } finally {
             setIsLoading(false);
