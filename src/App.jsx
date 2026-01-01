@@ -5,6 +5,7 @@ import { auth } from './lib/firebaseConfig';
 import ForkliftDashboard from "./components/ForkliftDashboard";
 import SignIn from "./components/SignIn";
 import Register from "./components/Register";
+import NavigationBar from "./components/Navbar";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -31,24 +32,27 @@ function App() {
   }
 
   return (
-    <Routes>
-      <Route 
-        path='/auth' 
-        element={
-          user ? (
-            <Navigate to="/" replace />
-          ) : showRegister ? (
-            <Register onSwitchToSignIn={() => setShowRegister(false)} />
-          ) : (
-            <SignIn onSwitchToRegister={() => setShowRegister(true)} />
-          )
-        }
-      />
-      <Route 
-        path='/' 
-        element={user ? <ForkliftDashboard user={user} /> : <Navigate to="/auth" replace />}
-      />
-    </Routes>
+    <>
+      <NavigationBar user={user} />
+      <Routes>
+        <Route 
+          path='/auth' 
+          element={
+            user ? (
+              <Navigate to="/" replace />
+            ) : showRegister ? (
+              <Register onSwitchToSignIn={() => setShowRegister(false)} />
+            ) : (
+              <SignIn onSwitchToRegister={() => setShowRegister(true)} />
+            )
+          }
+        />
+        <Route 
+          path='/' 
+          element={user ? <ForkliftDashboard user={user} /> : <Navigate to="/auth" replace />}
+        />
+      </Routes>
+    </>
   )
 }
 
