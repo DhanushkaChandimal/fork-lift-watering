@@ -7,6 +7,7 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import '../styles/ForkliftDashboard.css';
 import { useCreateForklift, useForklifts, useUpdateForklift } from "../hooks/useForklift";
+import { isAdmin } from '../lib/adminConfig';
 
 const ForkliftDashboard = ({ user }) => {
 	const [selectedForklift, setSelectedForklift] = useState(null);
@@ -225,7 +226,7 @@ const ForkliftDashboard = ({ user }) => {
 					<div className="mb-4">
 						<div className="d-flex justify-content-between align-items-center mb-3">
 							<h2 className="h3 mb-0">Active Forklifts ({activeForklifts.length})</h2>
-							{!error && (
+							{!error && isAdmin(user) && (
 								<Button variant="success" onClick={handleAddForklift}>
 									+ Add Forklift
 								</Button>
@@ -245,7 +246,10 @@ const ForkliftDashboard = ({ user }) => {
 								{activeForklifts.length === 0 && !error ? (
 									<tr>
 										<td colSpan="5" className="text-center py-4 text-muted">
-											No active forklifts found. Click "+ Add Forklift" to add one.
+											{isAdmin(user) 
+												? 'No active forklifts found. Click "+ Add Forklift" to add one.'
+												: 'No active forklifts found. Contact an administrator to add forklifts.'
+											}
 										</td>
 									</tr>
 								) : activeForklifts.length > 0 ? (
