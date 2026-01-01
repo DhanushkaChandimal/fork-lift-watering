@@ -19,7 +19,8 @@ const NavigationBar = ({ user }) => {
         <Navbar bg="dark" variant="dark" expand="lg" className="shadow-sm">
             <Container fluid>
                 <Navbar.Brand href="/" className="fw-bold">
-                    🔋 Forklift Battery Watering System
+                    🔋 <span className="d-none d-sm-inline">Forklift Battery System</span>
+                    <span className="d-inline d-sm-none">FBWS</span>
                 </Navbar.Brand>
                 
                 {user && (
@@ -29,7 +30,7 @@ const NavigationBar = ({ user }) => {
                             <Nav className="ms-auto align-items-center">
                                 <Nav.Item className="text-light me-3">
                                     <small>
-                                        Welcome <strong>{user.displayName || user.email}</strong>
+                                        Welcome, <strong>{user.displayName || user.email}</strong>
                                     </small>
                                 </Nav.Item>
                                 <Nav.Item>
