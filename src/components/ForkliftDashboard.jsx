@@ -235,40 +235,48 @@ const ForkliftDashboard = () => {
 								</tr>
 							</thead>
 							<tbody>
-								{activeForklifts.map(forklift => (
-									<tr key={forklift.id} className={getRowVariant(forklift)}>
-										<td className="fw-bold">Forklift #{forklift.id}</td>
-										<td>
-											<Badge bg={getBadgeVariant(forklift)}>{getStatusText(forklift)}</Badge>
-											<div className="d-block d-md-none mobile-watering-info">
-												{formatDate(forklift.lastWateringDate)}<br/>
-												By: {forklift.lastWateredBy || 'N/A'}
-											</div>
-										</td>
-										<td className="d-none d-md-table-cell">{formatDate(forklift.lastWateringDate)}</td>
-										<td className="d-none d-md-table-cell">{forklift.lastWateredBy || 'N/A'}</td>
-										<td>
-											<div className="d-flex flex-column gap-1">
-												<Button 
-													variant="primary"
-													size="sm"
-													className="action-btn"
-													onClick={() => handleWaterBattery(forklift)}
-												>
-													Water
-												</Button>
-												<Button 
-													variant="secondary"
-													size="sm"
-													className="action-btn"
-													onClick={() => handleServiceStatusToggle(forklift)}
-												>
-													Out of Service
-												</Button>
-											</div>
+								{activeForklifts.length === 0 ? (
+									<tr>
+										<td colSpan="5" className="text-center py-4 text-muted">
+											No active forklifts found. Click "+ Add Forklift" to add one.
 										</td>
 									</tr>
-								))}
+								) : (
+									activeForklifts.map(forklift => (
+										<tr key={forklift.id} className={getRowVariant(forklift)}>
+											<td className="fw-bold">Forklift #{forklift.id}</td>
+											<td>
+												<Badge bg={getBadgeVariant(forklift)}>{getStatusText(forklift)}</Badge>
+												<div className="d-block d-md-none mobile-watering-info">
+													{formatDate(forklift.lastWateringDate)}<br/>
+													By: {forklift.lastWateredBy || 'N/A'}
+												</div>
+											</td>
+											<td className="d-none d-md-table-cell">{formatDate(forklift.lastWateringDate)}</td>
+											<td className="d-none d-md-table-cell">{forklift.lastWateredBy || 'N/A'}</td>
+											<td>
+												<div className="d-flex flex-column gap-1">
+													<Button 
+														variant="primary"
+														size="sm"
+														className="action-btn"
+														onClick={() => handleWaterBattery(forklift)}
+													>
+														Water
+													</Button>
+													<Button 
+														variant="secondary"
+														size="sm"
+														className="action-btn"
+														onClick={() => handleServiceStatusToggle(forklift)}
+													>
+														Out of Service
+													</Button>
+												</div>
+											</td>
+										</tr>
+									))
+								)}
 							</tbody>
 						</Table>
 					</div>
