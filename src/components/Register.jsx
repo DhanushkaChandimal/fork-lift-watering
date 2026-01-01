@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { pendingUsersService } from "../services/pendingUsersService";
+import { userService } from "../services/userService";
 import "../styles/Auth.css";
 
 const Register = ({ onSwitchToSignIn }) => {
@@ -68,6 +69,17 @@ const Register = ({ onSwitchToSignIn }) => {
             if (existingPendingUser) {
                 setErrors({
                     general: "Your registration request is already pending. Please wait for an administrator to approve your account, or contact an administrator for assistance."
+                });
+                setIsLoading(false);
+                return;
+            }
+
+            // Check if email is already registered
+            const isEmailTaken = await userService.isEmailRegistered(formData.email.trim());
+            
+            if (isEmailTaken) {
+                setErrors({
+                    general: "This email is already registered. Please sign in instead or use a different email address."
                 });
                 setIsLoading(false);
                 return;

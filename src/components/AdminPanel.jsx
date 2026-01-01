@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'firebase/auth';
 import { secondaryAuth } from '../lib/firebaseConfig';
 import { pendingUsersService } from '../services/pendingUsersService';
+import { userService } from '../services/userService';
 import Container from 'react-bootstrap/Container';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
@@ -51,6 +52,13 @@ const AdminPanel = () => {
 
             // Send email verification to the new user
             await sendEmailVerification(userCredential.user);
+
+            // Store registered user in Firestore for duplicate checking
+            await userService.addRegisteredUser(
+                pendingUser.email,
+                pendingUser.displayName,
+                userCredential.user.uid
+            );
 
             // Sign out from secondary auth (doesn't affect main admin session)
             await secondaryAuth.signOut();
