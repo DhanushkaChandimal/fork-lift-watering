@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'firebase/auth';
-import { auth } from '../lib/firebaseConfig';
+import { secondaryAuth } from '../lib/firebaseConfig';
 import { pendingUsersService } from '../services/pendingUsersService';
 import Container from 'react-bootstrap/Container';
 import Table from 'react-bootstrap/Table';
@@ -36,9 +36,9 @@ const AdminPanel = () => {
         setMessage({ type: '', text: '' });
 
         try {
-            // Create Firebase auth account
+            // Use secondary auth to create user without affecting admin session
             const userCredential = await createUserWithEmailAndPassword(
-                auth,
+                secondaryAuth,
                 pendingUser.email,
                 pendingUser.password
             );
@@ -48,8 +48,11 @@ const AdminPanel = () => {
                 displayName: pendingUser.displayName
             });
 
-            // Send email verification
+            // Send email verification to the new user
             await sendEmailVerification(userCredential.user);
+
+            // Sign out from secondary auth (doesn't affect main admin session)
+            await secondaryAuth.signOut();
 
             // Remove from pending pool
             await pendingUsersService.removePendingUser(pendingUser.id);
