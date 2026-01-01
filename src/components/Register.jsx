@@ -14,6 +14,7 @@ const Register = ({ onSwitchToSignIn }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [successMessage, setSuccessMessage] = useState("");
 
     const validateForm = () => {
         const newErrors = {};
@@ -99,12 +100,7 @@ const Register = ({ onSwitchToSignIn }) => {
                 confirmPassword: ""
             });
             
-            alert("Registration request submitted! An administrator will review and approve your account. You will be able to sign in after approval.");
-            
-            // Switch back to sign in page
-            if (onSwitchToSignIn) {
-                onSwitchToSignIn();
-            }
+            setSuccessMessage("Registration request submitted! An administrator will review and approve your account. You will be able to sign in after approval.");
         } catch (err) {
             const errorMessage = err?.message || 'An unknown error occurred';
             setErrors({general: errorMessage});
@@ -131,6 +127,23 @@ const Register = ({ onSwitchToSignIn }) => {
                         <h2 className="auth-card-title">Create Account</h2>
                         <p className="auth-card-subtitle">Register to access the system</p>
                     </div>
+
+                    {successMessage && (
+                        <div className="auth-alert auth-alert-success">
+                            <div className="mb-2">✓ {successMessage}</div>
+                            <button 
+                                className="btn btn-sm btn-success mt-2"
+                                onClick={() => {
+                                    setSuccessMessage("");
+                                    if (onSwitchToSignIn) {
+                                        onSwitchToSignIn();
+                                    }
+                                }}
+                            >
+                                OK - Go to Sign In
+                            </button>
+                        </div>
+                    )}
 
                     <form onSubmit={handleRegister}>
                         <div className="auth-form-group">
