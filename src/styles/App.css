@@ -364,3 +364,19 @@ body {
 .alert-rounded {
     border-radius: 8px;
 }
+
+/* Copyright Footer Styles */
+.footer-copyright {
+    background: linear-gradient(135deg, var(--sams-dark-blue) 0%, var(--sams-blue) 100%);
+    color: white;
+    padding: 1rem 0;
+    text-align: center;
+    margin-top: auto;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+    font-size: 0.9rem;
+}
+
+.footer-copyright p {
+    margin: 0;
+    opacity: 0.95;
+}

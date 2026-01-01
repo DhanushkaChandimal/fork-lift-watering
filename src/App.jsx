@@ -9,6 +9,7 @@ import Register from "./components/Register";
 import NavigationBar from "./components/Navbar";
 import EmailVerification from "./components/EmailVerification";
 import AdminPanel from "./components/AdminPanel";
+import Footer from "./components/Footer";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -70,6 +71,7 @@ function App() {
           element={user ? <ForkliftDashboard user={user} /> : <Navigate to="/auth" replace />}
         />
       </Routes>
+      <Footer />
     </>
   )
 }

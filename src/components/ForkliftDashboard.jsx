@@ -426,17 +426,6 @@ const ForkliftDashboard = ({ user }) => {
 							</Button>
 						</Modal.Footer>
 					</Modal>
-
-					<footer className="footer-sams">
-						<Container>
-							<p className="footer-text text-center mb-1">
-								© {new Date().getFullYear()} Forklift Battery Watering System. All rights reserved.
-							</p>
-							<p className="footer-text text-center mb-0">
-								Created by Dhanushka for Sam's Club 6259
-							</p>
-						</Container>
-					</footer>
 				</>
 			)}
 		</Container>
