@@ -5,10 +5,12 @@ import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
+import { signOut } from 'firebase/auth';
+import { auth } from '../lib/firebaseConfig';
 import '../styles/ForkliftDashboard.css';
 import { useCreateForklift, useForklifts, useUpdateForklift } from "../hooks/useForklift";
 
-const ForkliftDashboard = () => {
+const ForkliftDashboard = ({ user }) => {
 	const [selectedForklift, setSelectedForklift] = useState(null);
 	const [showServiceModal, setShowServiceModal] = useState(false);
 	const [showWaterModal, setShowWaterModal] = useState(false);
@@ -20,6 +22,15 @@ const ForkliftDashboard = () => {
 	const { data: forklifts = [], isLoading, error } = useForklifts();
 	const { mutate: createForklift } = useCreateForklift();
 	const { mutate: updateForklift } = useUpdateForklift();
+
+	const handleSignOut = async () => {
+		try {
+			await signOut(auth);
+		} catch (error) {
+			console.error('Error signing out:', error);
+			alert('Failed to sign out. Please try again.');
+		}
+	};
 
 	const getDaysSinceWatering = (forklift) => {
 		if (!forklift.lastWateringDate) return Infinity;
@@ -196,7 +207,7 @@ const ForkliftDashboard = () => {
 	};
 
 	return (
-		<Container fluid className="py-4">
+		<Container fluid className="pt-4 mb-0">
 			{isLoading && (
 				<div className="text-center py-5">
 					<div className="spinner-border text-primary" role="status">
@@ -207,6 +218,15 @@ const ForkliftDashboard = () => {
 
 			{!isLoading && (
 				<>
+					<div className="d-flex justify-content-between align-items-center mb-3">
+						<div>
+							<small className="text-muted">Signed in as: <strong>{user?.email}</strong></small>
+						</div>
+						<Button variant="outline-danger" size="sm" onClick={handleSignOut}>
+							Sign Out
+						</Button>
+					</div>
+
 					<div className="text-center mb-4">
 						<h1 className="display-4 mb-3">Forklift Battery Watering Dashboard</h1>
 						<p className="lead text-muted">Batteries should be watered at least once every 2 weeks</p>
