@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../lib/firebaseConfig";
 import { pendingUsersService } from "../services/pendingUsersService";
@@ -125,6 +126,16 @@ const SignIn = ({ onSwitchToRegister, onSwitchToForgotPassword }) => {
                     <div className="auth-card-header">
                         <h2 className="auth-card-title">Welcome Back</h2>
                         <p className="auth-card-subtitle">Sign in to your account</p>
+                    </div>
+
+                    <div className="mb-3">
+                        <Link to="/practice" className="btn btn-outline-primary w-100" style={{ borderRadius: '8px', padding: '12px', fontWeight: '500' }}>
+                            🎯 Try Practice Mode - No Login Required
+                        </Link>
+                    </div>
+
+                    <div className="text-center mb-3" style={{ color: '#6c757d', fontSize: '14px' }}>
+                        <span>OR</span>
                     </div>
 
                     <form onSubmit={handleSignIn}>

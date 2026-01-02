@@ -90,7 +90,7 @@ function App() {
         />
         <Route 
           path='/practice' 
-          element={user ? <PracticeDashboard user={user} /> : <Navigate to="/auth" replace />}
+          element={<PracticeDashboard user={user} />}
         />
         <Route 
           path='/' 

@@ -242,17 +242,36 @@ const PracticeDashboard = ({ user }) => {
 
 	return (
 		<Container fluid className="dashboard-container pt-4">
-			<Alert variant="info" className="mb-4">
-				<div className="d-flex justify-content-between align-items-center">
-					<div>
-						<strong>🎯 Practice Mode</strong> - This is a demo environment with sample data. 
-						Practice using the app without affecting the real database. Changes are temporary and reset when you refresh.
+			{!user && (
+				<Alert variant="info" className="mb-4" style={{ borderRadius: '12px', border: 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+					<div className="d-flex justify-content-between align-items-center">
+						<div>
+							<h5 className="mb-2">🎯 You're in Practice Mode</h5>
+							<p className="mb-0" style={{ fontSize: '14px' }}>This is a demo environment with sample data. Try all features risk-free! Ready to track your real forklifts?</p>
+						</div>
+						<div>
+							<Link to="/auth" className="btn btn-primary" style={{ whiteSpace: 'nowrap' }}>
+								Sign Up Here →
+							</Link>
+						</div>
 					</div>
-					<Link to="/" className="btn btn-sm btn-outline-primary">
-						← Back to Main
-					</Link>
-				</div>
-			</Alert>
+				</Alert>
+			)}
+			{user && (
+				<Alert variant="success" className="mb-4" style={{ borderRadius: '12px', border: 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+					<div className="d-flex justify-content-between align-items-center">
+						<div>
+							<h5 className="mb-2">🎯 Practice Mode</h5>
+							<p className="mb-0" style={{ fontSize: '14px' }}>This is a safe demo environment. Changes here won't affect your real data.</p>
+						</div>
+						<div>
+							<Link to="/" className="btn btn-success" style={{ whiteSpace: 'nowrap' }}>
+								Go to Live Dashboard →
+							</Link>
+						</div>
+					</div>
+				</Alert>
+			)}
 
 			<div className="dashboard-header text-center">
 				<h1 className="dashboard-title">⚡ Forklift Battery Management (Practice)</h1>
