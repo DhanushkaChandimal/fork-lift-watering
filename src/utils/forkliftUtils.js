@@ -62,5 +62,12 @@ export const formatDate = (dateString) => {
 export const sortByUrgency = (a, b) => {
 	const daysA = getDaysSinceWatering(a);
 	const daysB = getDaysSinceWatering(b);
-	return daysB - daysA;
+	
+	// Primary sort: by urgency (days since watering, highest first)
+	if (daysB !== daysA) {
+		return daysB - daysA;
+	}
+	
+	// Secondary sort: by ID (lowest first) when urgency is the same
+	return a.id - b.id;
 };

@@ -27,7 +27,8 @@ const ForkliftDashboard = ({ user }) => {
 		.sort(sortByUrgency);
 	
 	const outOfServiceForklifts = forklifts
-		.filter(f => f.isOutOfService);
+		.filter(f => f.isOutOfService)
+		.sort((a, b) => a.id - b.id);
 
 	const handleWaterBattery = (forklift) => {
 		setSelectedForklift(forklift);
