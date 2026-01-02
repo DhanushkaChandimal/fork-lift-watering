@@ -4,6 +4,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './lib/firebaseConfig';
 import { isAdmin } from './lib/adminConfig';
 import ForkliftDashboard from "./components/ForkliftDashboard";
+import PracticeDashboard from "./components/PracticeDashboard";
 import SignIn from "./components/SignIn";
 import Register from "./components/Register";
 import ForgotPassword from "./components/ForgotPassword";
@@ -86,6 +87,10 @@ function App() {
         <Route 
           path='/profile' 
           element={user ? <ProfileSettings user={user} /> : <Navigate to="/auth" replace />}
+        />
+        <Route 
+          path='/practice' 
+          element={user ? <PracticeDashboard user={user} /> : <Navigate to="/auth" replace />}
         />
         <Route 
           path='/' 

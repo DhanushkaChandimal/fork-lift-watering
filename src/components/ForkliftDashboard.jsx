@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
@@ -153,6 +154,11 @@ const ForkliftDashboard = ({ user }) => {
 					<div className="dashboard-header text-center">
 						<h1 className="dashboard-title">⚡ Forklift Battery Management</h1>
 						<p className="dashboard-subtitle">Batteries should be watered at least once every 2 weeks</p>
+						<div className="mt-2">
+							<Link to="/practice" style={{ fontSize: '0.85rem', textDecoration: 'none' }}>
+								🎯 Try Practice Mode
+							</Link>
+						</div>
 					</div>
 
 					<div className="d-flex justify-content-center gap-3 mb-4 flex-wrap">
